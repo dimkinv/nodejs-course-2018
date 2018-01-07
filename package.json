@@ -1,0 +1,10 @@
+{
+  "name": "nodejs-course-2018",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Danny Vernovsky <dvernovsky@interwise.com>",
+  "license": "MIT",
+  "dependencies": {
+    "reveal.js": "^3.6.0"
+  }
+}
