@@ -14,3 +14,16 @@
     background: url(../assets/what_will_you_know.png) no-repeat;
     position: absolute;
 }
+
+
+pre{
+    box-shadow: none !important;
+}
+
+pre.wide{
+    width:100%;
+}
+
+code{
+    max-height: none !important;
+}

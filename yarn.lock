@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+highlightjs@^9.10.0:
+  version "9.10.0"
+  resolved "https://registry.yarnpkg.com/highlightjs/-/highlightjs-9.10.0.tgz#fca9b78ddaa3b1abca89d6c3ee105ad270a80190"
+
 reveal.js@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/reveal.js/-/reveal.js-3.6.0.tgz#ce0e64f30cbebd6e5ce885c2f384085c5e5821e8"
