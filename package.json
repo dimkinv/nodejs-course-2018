@@ -5,7 +5,19 @@
   "author": "Danny Vernovsky <dvernovsky@interwise.com>",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.17.1",
+    "express": "^4.16.2",
     "highlightjs": "^9.10.0",
+    "jsdom": "^11.6.1",
     "reveal.js": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/express": "^4.11.0",
+    "@types/jsdom": "^11.0.4",
+    "simple-autoreload-server": "^0.2.7"
+  },
+  "scripts": {
+    "start": "autoreload-server & tsc -w"
   }
 }

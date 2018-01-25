@@ -7,19 +7,114 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="../node_modules/reveal.js/css/reveal.css">
-    <link rel="stylesheet" href="../node_modules/reveal.js/css/theme/league.css">
+    <link rel="stylesheet" href="../node_modules/reveal.js/css/theme/beige.css">
+    <link rel="stylesheet" href="../node_modules/reveal.js/lib/css/zenburn.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <script>
+        // 2. This code loads the IFrame Player API code asynchronously.
+        var tag = document.createElement('script');
+
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // 3. This function creates an <iframe> (and YouTube player)
+        //    after the API code downloads.
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: '3oem-M2tQU4'
+            });
+        }
+    </script>
 </head>
 
 <body>
+    <div class="att_logo"></div>
     <div class="reveal">
         <div class="slides">
-            <section>Slide 1</section>
-            <section>Slide 2</section>
+            <section>
+                <h1>Introduction to Node.js</h1>
+                <sub>By Nabil Naffar & Danny Vernovsky</sub>
+            </section>
+            <section>
+                <p>Because why not!</p>
+                <div id="player"></div>
+            </section>
+            <section>
+                <h2>In This Module</h2>
+                <p>Node.js AFAP
+                    <span style="font-size: 10px;">As fast as possible</span>
+                </p>
+                <p>Hello Express.js</p>
+                <p>HTTP DEMO</p>
+                <p>Middlewares</p>
+                <p>REST API</p>
+            </section>
+            <section>
+                <h2>Node.js noob to pro</h2>
+                <p>process.env</p>
+                <p>__dirname, __filename</p>
+                <p>fs API</p>
+                <p>path API</p>
+            </section>
+            <section>
+                <h2>Hello Express.js</h2>
+                <img width="700" src="../assets/expressjs.png" />
+                <p>@
+                    <a href="https://expressjs.com/">https://expressjs.com/</a>
+                </p>
+            </section>
+            <section>
+                <h2>Express Hello World</h2>
+                <pre>
+                    <code data-trim data-noescape class="bash">
+                        $ npm install express --save
+                    </code>
+                </pre>
+                <pre class="wide">
+                    <code data-trim data-noescape class="js">
+                        const express = require('express')
+                        const app = express()
+                        
+                        app.get('/', (req, res) => res.send('Hello World!'))
+                        
+                        app.listen(3000, () => console.log('Example app listening on port 3000!'))
+                    </code>
+                </pre>
+            </section>
+            <section>
+                <img src="../assets/demotime.png" alt="">
+            </section>
+            <section>
+                <h2>Express.js middlewares</h2>
+                <p class="fragment">Just a function</p>
+                <p class="fragment">executes in a queue fasion</p>
+                <p class="fragment">responsible to call next middleware</p>
+            </section>
         </div>
     </div>
+    <script src="../node_modules/reveal.js/lib/js/head.min.js"></script>
     <script src="../node_modules/reveal.js/js/reveal.js"></script>
     <script>
-        Reveal.initialize();
+        Reveal.initialize({
+            history: true,
+            dependencies: [
+                { src: '../node_modules/reveal.js/plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: '../node_modules/reveal.js/plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: '../node_modules/reveal.js/plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+            ]
+        });
+        Reveal.addEventListener('slidechanged', function (event) {
+            if (event.indexh === 1) {
+                player.playVideo();
+            } else {
+                player.stopVideo();
+            }
+            // event.previousSlide, event.currentSlide, event.indexh, event.indexv
+        });
     </script>
 </body>
 
