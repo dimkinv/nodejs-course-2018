@@ -198,14 +198,3 @@ fetch('http://localhost:3000/items').then(res => res.json()).then(items => {
     onLoad();
 });
 
-// -------------------------------------------------------------------------------------------------- //
-// Todos
-// -------------------------------------------------------------------------------------------------- //
-/* 
-    - Update table display on adding item
-    - Use localstorage for better UX
-    - Styling
-    - Add remove button
-    - Timer ?
-    - Login - using the local storage
-*/
