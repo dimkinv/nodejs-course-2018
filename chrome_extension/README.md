@@ -16,3 +16,8 @@ Todo:
 - Add remove button
 - Timer ?
 - Login - using the local storage
+
+Note: 
+This extension ruses `http://localhost:3000` server that exposes the following APIs:
+- GET /items : get all available items
+- POST /items : Publish new item for group sale
