@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../node_modules/reveal.js/css/theme/beige.css">
     <link rel="stylesheet" href="../node_modules/reveal.js/lib/css/zenburn.css">
     <link rel="stylesheet" href="../styles/main.css">
-    <script>
+    <!-- <script>
         // 2. This code loads the IFrame Player API code asynchronously.
         var tag = document.createElement('script');
 
@@ -28,7 +28,7 @@
                 videoId: '3oem-M2tQU4'
             });
         }
-    </script>
+    </script> -->
 </head>
 
 <body>
@@ -39,10 +39,10 @@
                 <h1>Introduction to Node.js</h1>
                 <sub>By Nabil Naffar & Danny Vernovsky</sub>
             </section>
-            <section>
+            <!-- <section>
                 <p>Because why not!</p>
                 <div id="player"></div>
-            </section>
+            </section> -->
             <section>
                 <h2>In This Module</h2>
                 <p>Node.js AFAP
@@ -76,7 +76,7 @@
                 </pre>
                 <pre class="wide">
                     <code data-trim data-noescape class="js">
-                        const express = require('express')
+                        import * as express from 'express';
                         const app = express()
                         
                         app.get('/', (req, res) => res.send('Hello World!'))
@@ -112,28 +112,155 @@
                     </code>
                 </pre>
             </section>
+            <section>
+                <h2>rest api</h2>
+                <div id='rest_video_fragment' class="fragment">
+                    <p>Setting up REST API standard</p>
+                    <video id="rest_video" height="400">
+                        <source src="../assets/deciding_rest_convention.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </section>
+            <section>
+                <h2> rest 
+                    <span style="font-size: 18px">as fast as possible</span>
+                </h2>
+                <table>
+                    <tr>
+                        <td>GET</td>
+                        <td>Get resources or resource by id</td>
+                    </tr>
+                    <tr>
+                        <td>POST</td>
+                        <td>Create new resource</td>
+                    </tr>
+                    <tr>
+                        <td>PUT</td>
+                        <td>Update resource</td>
+                    </tr>
+                    <tr>
+                        <td>DELETE</td>
+                        <td>Delete resource</td>
+                    </tr>
+                    <tr>
+                        <td>PATCH</td>
+                        <td>Partially update resource</td>
+                    </tr>
+                </table>
+            </section>
+            <section>
+                <h2>Rest API - router</h2>
+                <div>
+                    <p>Represent relative root route</p>
+                    <pre>
+                        <code data-trim data-noescape class="ts">
+                            /*person.controller.ts*/
+                            import { Router } from 'express';
+                            
+                            export const router: Router = Router();
+                            router.get('/', (req, res) => {
+                                res.send([{ name: 'Danny' }, { name: 'Nabil' }]);
+                            });                            
+                        </code>
+                    </pre>
+                </div>
+            </section>
+            <section>
+                <h2>Rest API - router</h2>
+                <div>
+                    <p>Can be connected via other routers to create hierarchy</p>
+                    <pre>
+                    <code data-trim data-noescape class="ts">
+                        /* rest-api.ts */
+                        import * as express from 'express';
+                        import { router } from './person.controller';
+                        const app = express();
+
+                        app.use('/api/person', router);
+
+                        app.listen(3000, ()=>{
+                            console.log('listening on port 3000');
+                        });
+                    </code>
+            </div>
+            </section>
+            <section>
+                <h2>Rest api - parameters</h2>
+                <table>
+                    <tr>
+                        <td>
+                            url parameters (params)
+                        </td>
+                        <td>
+                            /api/user/<b>1234</b>
+                        </td>
+                    </tr>
+                </table>
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        router.get('/:userId', (req, res) => {   
+                            const userId = req.params.userId;
+                            const user = await persistance.getUserById(userid);
+                            res.send(user);
+                        });                            
+                    </code>
+                </pre>
+                    <small>
+                        <i>NOTE: to merge between router params use `mergeParams:true` when creating a router </i>
+                    </small>
+                    <!-- <p style="text-align: left">
+                    <tr>
+                        <td>
+                            query parameters (query)
+                        </td>
+                        <td>
+                            /api/user?<b>name=Danny</b>
+                        </td>
+                    </tr>
+                </p> -->
+
+
+            </section>
+            </div>
         </div>
-    </div>
-    <script src="../node_modules/reveal.js/lib/js/head.min.js"></script>
-    <script src="../node_modules/reveal.js/js/reveal.js"></script>
-    <script>
-        Reveal.initialize({
-            history: true,
-            dependencies: [
-                { src: '../node_modules/reveal.js/plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
-                { src: '../node_modules/reveal.js/plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
-                { src: '../node_modules/reveal.js/plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
-            ]
-        });
-        Reveal.addEventListener('slidechanged', function (event) {
-            if (event.indexh === 1) {
-                player.playVideo();
-            } else {
-                player.stopVideo();
-            }
-            // event.previousSlide, event.currentSlide, event.indexh, event.indexv
-        });
-    </script>
+        <script src="../node_modules/reveal.js/lib/js/head.min.js"></script>
+        <script src="../node_modules/reveal.js/js/reveal.js"></script>
+        <script>
+            Reveal.initialize({
+                history: true,
+                dependencies: [
+                    { src: '../node_modules/reveal.js/plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                    { src: '../node_modules/reveal.js/plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                    { src: '../node_modules/reveal.js/plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+                ]
+            });
+            let currentSlide;
+            Reveal.addEventListener('slidechanged', function (event) {
+                currentSlide = event.indexh;
+                // if (event.indexh === 1) {
+                //     player.playVideo();
+                // } else {
+                //     player.stopVideo();
+                // }
+                // event.previousSlide, event.currentSlide, event.indexh, event.indexv
+            });
+
+            Reveal.addEventListener('fragmentshown', function (event) {
+                if (event.fragment.id === 'rest_video_fragment') {
+                    document.getElementById('rest_video').play()
+                }
+                console.log(event);
+            });
+
+            Reveal.addEventListener('fragmenthidden', function (event) {
+                if (event.fragment.id === 'rest_video_fragment') {
+                    const video = document.getElementById('rest_video');
+                    video.pause();
+                    video.currentTime = 0;
+                }
+                console.log(event);
+            });
+        </script>
 </body>
 
 </html>
