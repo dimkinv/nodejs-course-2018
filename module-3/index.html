@@ -7,20 +7,56 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="../node_modules/reveal.js/css/reveal.css">
-    <link rel="stylesheet" href="../node_modules/reveal.js/css/theme/league.css">
+    <link rel="stylesheet" href="../node_modules/reveal.js/css/theme/beige.css">
+    <link rel="stylesheet" href="../node_modules/reveal.js/lib/css/zenburn.css">
+    <link rel="stylesheet" href="../styles/main.css">
 </head>
 
 <body>
+    <div class="att_logo"></div>
     <div class="reveal">
         <div class="slides">
-            <section>Slide 1</section>
-            <section>Slide 2</section>
+            <section>
+                <h1>Events & Async</h1>
+                <sub>By Nabil Naffar & Danny Vernovsky</sub>
+            </section>
+            <section>
+                <h2>In This Module</h2>
+                <p>Events</p>
+                <p>Promises</p>
+                <p>Async/Await</p>
+            </section>
+            <section>
+                <h2>Observer</h2>
+                <table>
+                    <tr>
+                        <td>
+                            <img src="../assets/hubble.png" width="400" />
+                        </td>
+                        <td style="vertical-align: top">
+                            <ul>
+                                <li>Full Orbit in 96 Minutes</li>
+                                <li>8ft Mirror Diameter</li>
+                                <li>~550km Above Surface</li>
+                                <li>7.59km/s Velocity</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </section>
         </div>
-    </div>
-    <script src="../node_modules/reveal.js/js/reveal.js"></script>
-    <script>
-        Reveal.initialize();
-    </script>
+        <script src="../node_modules/reveal.js/lib/js/head.min.js"></script>
+        <script src="../node_modules/reveal.js/js/reveal.js"></script>
+        <script>
+            Reveal.initialize({
+                history: true,
+                dependencies: [
+                    { src: '../node_modules/reveal.js/plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                    { src: '../node_modules/reveal.js/plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                    { src: '../node_modules/reveal.js/plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+                ]
+            });
+        </script>
 </body>
 
 </html>
