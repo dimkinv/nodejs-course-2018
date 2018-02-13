@@ -3,9 +3,11 @@ import App from '../components/App';
 import { AppContainerState } from './App.container.state';
 import Item from '../models/Item';
 import { getItemFromPage } from '../crawler';
+import Login from '../components/Login';
 
 const baseUrl = 'http://localhost:3000/items';
 const CACHE_KEY = 'NODEJS_COURSE_GROUP_SHOPPING_ITEMS';
+const USERNAME = 'NODEJS_COURSE_GROUP_SHOPPING_NAME';
 const headers = new Headers({ 'Content-Type': 'application/json' });
 
 class AppContainer extends React.Component<{}, AppContainerState> {
@@ -15,6 +17,14 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         this.joinShopping = this.joinShopping.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
         this.addNewItem = this.addNewItem.bind(this);
+        this.onLogin = this.onLogin.bind(this);
+        this.onLogout = this.onLogout.bind(this);
+    }
+
+    onLogout() {
+        this.setState({username: ''}, () => {
+            window.localStorage.removeItem(USERNAME);
+        });
     }
 
     createGroupShopping(item: Item): Promise<void> {
@@ -57,7 +67,19 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             });
     }
 
+    onLogin(username: string) {
+        window.localStorage.setItem(USERNAME, username);
+        this.setState({username});
+    }
+
     componentDidMount() {
+        const username = window.localStorage.getItem(USERNAME);
+        if(username) {
+            this.setState({
+                username
+            });
+        }
+
         const cachedItems = window.localStorage.getItem(CACHE_KEY);
         if (cachedItems) {
             this.setState({
@@ -92,11 +114,14 @@ class AppContainer extends React.Component<{}, AppContainerState> {
     }
 
     render() {
-        return this.state.loading ?
+        return !this.state.username ? <Login onLogin={this.onLogin}/>:
+        this.state.loading ?
             <div>Loading...</div> :
             this.state.err ?
                 <div>oh no! {this.state.err}</div> :
                 <App
+                    username={this.state.username}
+                    onLogout={this.onLogout}
                     items={this.state.items}
                     joinShopping={this.joinShopping}
                     addNewItem={this.addNewItem}

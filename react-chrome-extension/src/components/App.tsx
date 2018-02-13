@@ -26,6 +26,8 @@ class App extends React.Component<AppProps> {
     render() {
         return (
             <>
+            <span>logged as: </span><span style={{color: 'tomato'}}>{this.props.username} </span>
+            <button type="button" onClick={this.props.onLogout}>x</button>
             <h1>Group Shopping</h1>
             <hr />
             <button className="add-item-button" type="button" onClick={this.addNewItem}>+ Publish this item!</button>

@@ -5,4 +5,6 @@ export  default class Item {
     name: string;
     imageUrl: string;
     url: string;
+    targetAmount: number;
+    currentAmount: number;
 }
