@@ -7,7 +7,7 @@ interface LoaderProps {
 
 class Loader extends React.Component<LoaderProps> {
     render() {
-        const percentage = (this.props.value / this.props.target * 100).toFixed(2);
+        const percentage = (Math.min(this.props.value / this.props.target * 100, 100)).toFixed(2);
         return (
             <div style={{ position: 'relative', height: '10px' }}>
                 <span

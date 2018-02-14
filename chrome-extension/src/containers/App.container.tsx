@@ -38,8 +38,23 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             });
     }
 
-    joinShopping(itemId: number) {
-        // tbd...
+    async joinShopping(item: Item) {
+        const updateItem = {...item, numOfBuyers: item.numOfBuyers + 1};
+        await fetch(`${baseUrl}/${item.id}`, { method: 'PUT', body: JSON.stringify(updateItem), headers });
+        this.setState(
+            (prevState) => ({
+                err: '',
+                items: prevState.items.map(oldItem => {
+                    if (oldItem.id === item.id) {
+                        return { ...oldItem, numOfBuyers: oldItem.numOfBuyers + 1 };
+                    }
+                    return oldItem;
+                }),
+                loading: false,
+            }), 
+            () => {
+                this.updateItemsCache(this.state.items);
+            });
     }
 
     async deleteItem(itemId: number) {

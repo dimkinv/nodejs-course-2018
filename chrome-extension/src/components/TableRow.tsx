@@ -12,7 +12,7 @@ class TableRow extends React.Component<TableRowProps> {
 
     onJoinShopping(event: React.FormEvent<HTMLButtonElement>) {
         if (this.props.item.id) {
-            this.props.joinShopping(this.props.item.id);
+            this.props.joinShopping(this.props.item);
         }
     }
 

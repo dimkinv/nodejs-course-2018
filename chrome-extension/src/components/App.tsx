@@ -2,6 +2,7 @@ import * as React from 'react';
 import './App.css';
 import AppProps from './App.props';
 import TableRow from './TableRow';
+import Item from '../models/Item';
 
 class App extends React.Component<AppProps> {
     constructor(props: AppProps) {
@@ -11,8 +12,8 @@ class App extends React.Component<AppProps> {
         this.addNewItem = this.addNewItem.bind(this);
     }
 
-    joinShopping(itemId: number) {
-        this.props.joinShopping(itemId);
+    joinShopping(item: Item) {
+        this.props.joinShopping(item);
     }
 
     deleteItem(itemId: number) {
