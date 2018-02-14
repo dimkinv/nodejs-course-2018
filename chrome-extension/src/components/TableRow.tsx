@@ -27,7 +27,13 @@ class TableRow extends React.Component<TableRowProps> {
             <tr>
                 <td><img className="item-image" src={this.props.item.imageUrl} /></td>
                 <td>
-                    <a className="ellipsis link" target="_blank" href={this.props.item.url}>{this.props.item.name}</a>
+                    <a
+                        className="ellipsis link"
+                        target="_blank"
+                        href={this.props.item.url}
+                        title={this.props.item.name}
+                    >{this.props.item.name}
+                    </a>
                     <Loader value={this.props.item.numOfBuyers} target={this.props.item.targetNumOfBuyers} />
                 </td>
                 <td className="price">{this.props.item.currency} {this.props.item.price}</td>
