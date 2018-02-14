@@ -1,6 +1,7 @@
 import * as React from 'react';
 import TableRowProps from './TableRow.props';
 import './TableRow.css';
+import Loader from './Loader';
 
 class TableRow extends React.Component<TableRowProps> {
     constructor(props: TableRowProps) {
@@ -25,7 +26,10 @@ class TableRow extends React.Component<TableRowProps> {
         return (
             <tr>
                 <td><img className="item-image" src={this.props.item.imageUrl} /></td>
-                <td><a className="ellipsis" target="_blank" href={this.props.item.url}>{this.props.item.name}</a></td>
+                <td>
+                    <a className="ellipsis link" target="_blank" href={this.props.item.url}>{this.props.item.name}</a>
+                    <Loader value={this.props.item.numOfBuyers} target={this.props.item.targetNumOfBuyers} />
+                </td>
                 <td className="price">{this.props.item.currency} {this.props.item.price}</td>
                 <td>
                     <button type="button" onClick={this.onJoinShopping}>+</button>

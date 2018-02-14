@@ -57,6 +57,9 @@ class AppContainer extends React.Component<{}, AppContainerState> {
 
     addNewItem(): void {
         getItemFromPage()
+            .then((item: Item) => {
+                return { ...item, targetNumOfBuyers: 10, numOfBuyers: 1 };
+            })
             .then((item: Item) => this.createGroupShopping(item))
             .catch((err: string) => {
                 /* tslint:disable */
@@ -114,11 +117,12 @@ class AppContainer extends React.Component<{}, AppContainerState> {
     }
 
     render() {
-        return !this.state.username ? <Login onLogin={this.onLogin}/>:
+        return !this.state.username ? 
+        <Login onLogin={this.onLogin}/> :
         this.state.loading ?
             <div>Loading...</div> :
             this.state.err ?
-                <div>oh no! {this.state.err}</div> :
+                <div>oh no! {JSON.stringify(this.state.err)}</div> :
                 <App
                     username={this.state.username}
                     onLogout={this.onLogout}
