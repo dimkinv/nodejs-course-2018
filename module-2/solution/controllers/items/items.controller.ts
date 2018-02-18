@@ -3,6 +3,7 @@ import Item from '../../../../models/Item';
 
 let currentId = 0;
 const items: Item[] = [];
+const AUTH_HEADER = 'x-auth';
 
 export class ItemsController {
     constructor() {
@@ -25,6 +26,17 @@ export class ItemsController {
     put(req: Request, res: Response) {
         const id = +req.params.id as number;
         const itemToUpdate = req.body as Item;
+        const user = req.headers[AUTH_HEADER];
+
+        if(user === itemToUpdate.attuid){
+            res.status(400).json({message: 'You cannot join to your own item'});
+            return;
+        }
+
+        if(itemToUpdate.buyers.includes(user)){
+            res.status(400).json({message: 'You are already subscribed to this item'});
+            return;
+        }
 
         const index = items.findIndex(item => item.id === id)
         if (index === -1) {

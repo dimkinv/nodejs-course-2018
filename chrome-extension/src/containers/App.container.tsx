@@ -5,7 +5,7 @@ import Item from '../models/Item';
 import { getItemFromPage } from '../crawler';
 import Login from '../components/Login';
 
-const baseUrl = 'http://localhost:3000/items';
+const baseUrl = 'http://localhost:3000/api/items';
 const CACHE_KEY = 'NODEJS_COURSE_GROUP_SHOPPING_ITEMS';
 const USERNAME = 'NODEJS_COURSE_GROUP_SHOPPING_NAME';
 const X_AUTH = 'X-AUTH';
