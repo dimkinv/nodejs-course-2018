@@ -1,5 +1,6 @@
 export  default class Item {
     id?: number;
+    attuid: string;
     price: string;
     currency: string;
     name: string;
@@ -7,4 +8,5 @@ export  default class Item {
     url: string;
     targetNumOfBuyers: number;
     numOfBuyers: number;
+    buyers: string[];
 }

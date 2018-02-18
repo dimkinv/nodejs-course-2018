@@ -8,6 +8,7 @@ import Login from '../components/Login';
 const baseUrl = 'http://localhost:3000/items';
 const CACHE_KEY = 'NODEJS_COURSE_GROUP_SHOPPING_ITEMS';
 const USERNAME = 'NODEJS_COURSE_GROUP_SHOPPING_NAME';
+const X_AUTH = 'X-AUTH';
 const headers = new Headers({ 'Content-Type': 'application/json' });
 
 class AppContainer extends React.Component<{}, AppContainerState> {
@@ -19,61 +20,27 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         this.addNewItem = this.addNewItem.bind(this);
         this.onLogin = this.onLogin.bind(this);
         this.onLogout = this.onLogout.bind(this);
+        this.cancelJoining = this.cancelJoining.bind(this);
+    }
+
+    onLogin(username: string) {
+        this.setState({username}, () => {
+            window.localStorage.setItem(USERNAME, username);
+            headers.append(X_AUTH, username);
+        });
     }
 
     onLogout() {
         this.setState({username: ''}, () => {
+            headers.delete(X_AUTH);
             window.localStorage.removeItem(USERNAME);
         });
-    }
-
-    createGroupShopping(item: Item): Promise<void> {
-        return fetch(baseUrl, { method: 'POST', headers, body: JSON.stringify(item) })
-            .then(res => res.json()).then((id: number) => {
-                this.setState((prevState => ({
-                    err: '',
-                    items: prevState.items.concat([{ ...item, id }]),
-                    loading: false,
-                })));
-            });
-    }
-
-    async joinShopping(item: Item) {
-        const updateItem = {...item, numOfBuyers: item.numOfBuyers + 1};
-        await fetch(`${baseUrl}/${item.id}`, { method: 'PUT', body: JSON.stringify(updateItem), headers });
-        this.setState(
-            (prevState) => ({
-                err: '',
-                items: prevState.items.map(oldItem => {
-                    if (oldItem.id === item.id) {
-                        return { ...oldItem, numOfBuyers: oldItem.numOfBuyers + 1 };
-                    }
-                    return oldItem;
-                }),
-                loading: false,
-            }), 
-            () => {
-                this.updateItemsCache(this.state.items);
-            });
-    }
-
-    async deleteItem(itemId: number) {
-        await fetch(`${baseUrl}/${itemId}`, { method: 'DELETE' });
-        this.setState(
-            (prevState) => ({
-                err: '',
-                items: prevState.items.filter(item => item.id !== itemId),
-                loading: false,
-            }), 
-            () => {
-                this.updateItemsCache(this.state.items);
-            });
     }
 
     addNewItem(): void {
         getItemFromPage()
             .then((item: Item) => {
-                return { ...item, targetNumOfBuyers: 10, numOfBuyers: 1 };
+                return { ...item, targetNumOfBuyers: 10, numOfBuyers: 1, attuid: this.state.username };
             })
             .then((item: Item) => this.createGroupShopping(item))
             .catch((err: string) => {
@@ -85,10 +52,80 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             });
     }
 
-    onLogin(username: string) {
-        window.localStorage.setItem(USERNAME, username);
-        this.setState({username});
+    createGroupShopping(item: Item): Promise<void> {
+        return fetch(baseUrl, { method: 'POST', headers, body: JSON.stringify(item) })
+            .then(res => res.json()).then((createdItem: Item) => {
+                this.setState((prevState => ({
+                    err: '',
+                    items: prevState.items.concat(createdItem),
+                    loading: false,
+                })));
+            });
     }
+
+    deleteItem(itemId: number) {
+        return fetch(`${baseUrl}/${itemId}`, { method: 'DELETE' }).then(res => {
+            this.setState(
+                (prevState) => ({
+                    err: '',
+                    items: prevState.items.filter(item => item.id !== itemId),
+                    loading: false,
+                }), 
+                () => {
+                    this.updateItemsCache(this.state.items);
+                });
+        });
+    }
+
+    joinShopping(item: Item): void{
+        if (item.buyers.includes(this.state.username)) {
+            return;
+        }
+        const buyers = item.buyers.concat(this.state.username);
+        const updateItem = {...item, numOfBuyers: item.numOfBuyers + 1, buyers};
+        fetch(`${baseUrl}/${item.id}`, { method: 'PUT', headers }).then(res => {
+            this.setState(
+                (prevState) => ({
+                    err: '',
+                    items: prevState.items.map(oldItem => {
+                        if (oldItem.id === item.id) {
+                            return updateItem;
+                        }
+                        return oldItem;
+                    }),
+                    loading: false,
+                }), 
+                () => {
+                    this.updateItemsCache(this.state.items);
+                });
+        });
+    }
+
+    cancelJoining(item:Item): void {
+        if (!item.buyers.includes(this.state.username)) {
+            return;
+        }
+        const buyers = item.buyers.filter(buyer => buyer!==this.state.username);
+        const updateItem = {...item, numOfBuyers: item.numOfBuyers - 1, buyers};
+        fetch(`${baseUrl}/${item.id}`, { method: 'DELETE', headers }).then(res => {
+            this.setState(
+                (prevState) => ({
+                    err: '',
+                    items: prevState.items.map(oldItem => {
+                        if (oldItem.id === item.id) {
+                            return updateItem;
+                        }
+                        return oldItem;
+                    }),
+                    loading: false,
+                }), 
+                () => {
+                    this.updateItemsCache(this.state.items);
+                });
+        });
+    }
+
+
 
     componentDidMount() {
         const username = window.localStorage.getItem(USERNAME);
@@ -143,6 +180,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
                     onLogout={this.onLogout}
                     items={this.state.items}
                     joinShopping={this.joinShopping}
+                    cancelJoining={this.cancelJoining}
                     addNewItem={this.addNewItem}
                     deleteItem={this.deleteItem} />;
     }

@@ -10,10 +10,15 @@ class App extends React.Component<AppProps> {
         this.joinShopping = this.joinShopping.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
         this.addNewItem = this.addNewItem.bind(this);
+        this.cancelJoining = this.cancelJoining.bind(this);
     }
 
     joinShopping(item: Item) {
         this.props.joinShopping(item);
+    }
+
+    cancelJoining(item: Item) {
+        this.props.cancelJoining(item);
     }
 
     deleteItem(itemId: number) {
@@ -36,12 +41,23 @@ class App extends React.Component<AppProps> {
             <table>
                 <tbody>
                 {this.props.items.map(item => (
-                    <TableRow key={item.id} item={item} joinShopping={this.joinShopping} deleteItem={this.deleteItem} />
+                    <TableRow 
+                        key={item.id} 
+                        item={item} 
+                        joinShopping={this.joinShopping} 
+                        cancelJoining={this.cancelJoining}
+                        deleteItem={this.deleteItem}
+                        isMine={this.isMine(item)} 
+                    />
                 ))}
                 </tbody>
             </table>
             </>
         );
+    }
+
+    isMine(item: Item) {
+        return this.props.username === item.attuid;
     }
 }
 

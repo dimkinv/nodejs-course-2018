@@ -7,4 +7,5 @@ export default interface AppProps {
     deleteItem(itemId: number): void;
     addNewItem(): void;
     onLogout(): void;
+    cancelJoining(item: Item): void;
 }
