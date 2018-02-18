@@ -40,15 +40,15 @@ class AppContainer extends React.Component<{}, AppContainerState> {
     addNewItem(): void {
         getItemFromPage()
             .then((item: Item) => {
-                return { ...item, targetNumOfBuyers: 10, numOfBuyers: 1, attuid: this.state.username };
+                return { ...item, targetNumOfBuyers: 10, attuid: this.state.username };
             })
             .then((item: Item) => this.createGroupShopping(item))
             .catch((err: string) => {
                 /* tslint:disable */
                 console.log(err);
-                this.setState({
-                    err
-                });
+                // this.setState({
+                //     err
+                // });
             });
     }
 
@@ -64,7 +64,8 @@ class AppContainer extends React.Component<{}, AppContainerState> {
     }
 
     deleteItem(itemId: number) {
-        return fetch(`${baseUrl}/${itemId}`, { method: 'DELETE' }).then(res => {
+        console.log('deleting...', itemId);
+        fetch(`${baseUrl}/${itemId}`, { headers, method: 'DELETE' }).then(res => {
             this.setState(
                 (prevState) => ({
                     err: '',
@@ -82,7 +83,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             return;
         }
         const buyers = item.buyers.concat(this.state.username);
-        const updateItem = {...item, numOfBuyers: item.numOfBuyers + 1, buyers};
+        const updateItem = {...item, buyers};
         fetch(`${baseUrl}/${item.id}`, { method: 'PUT', headers }).then(res => {
             this.setState(
                 (prevState) => ({
@@ -106,7 +107,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             return;
         }
         const buyers = item.buyers.filter(buyer => buyer!==this.state.username);
-        const updateItem = {...item, numOfBuyers: item.numOfBuyers - 1, buyers};
+        const updateItem = {...item, buyers};
         fetch(`${baseUrl}/${item.id}`, { method: 'DELETE', headers }).then(res => {
             this.setState(
                 (prevState) => ({

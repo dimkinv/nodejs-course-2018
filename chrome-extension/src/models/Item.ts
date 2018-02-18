@@ -7,6 +7,5 @@ export  default class Item {
     imageUrl: string;
     url: string;
     targetNumOfBuyers: number;
-    numOfBuyers: number;
     buyers: string[];
 }

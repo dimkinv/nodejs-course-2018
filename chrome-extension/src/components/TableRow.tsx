@@ -13,19 +13,20 @@ class TableRow extends React.Component<TableRowProps> {
     }
 
     onJoinShopping(event: React.FormEvent<HTMLButtonElement>) {
-        if (this.props.item.id) {
+        if (this.props.item.id !== undefined) {
             this.props.joinShopping(this.props.item);
         }
     }
 
     onCancelJoining(event: React.FormEvent<HTMLButtonElement>) {
-        if (this.props.item.id) {
+        if (this.props.item.id !== undefined) {
             this.props.cancelJoining(this.props.item);
         }
     } 
 
     removeItem(event: React.FormEvent<HTMLButtonElement>) {
-        if (this.props.item.id) {
+        console.log('removing itemId ', this.props.item.id);
+        if (this.props.item.id !== undefined) {
             this.props.deleteItem(this.props.item.id);
         }
     }
@@ -42,7 +43,10 @@ class TableRow extends React.Component<TableRowProps> {
                         title={this.props.item.name}
                     >{this.props.item.name}
                     </a>
-                    <Loader value={this.props.item.numOfBuyers} target={this.props.item.targetNumOfBuyers} />
+                    <Loader 
+                        value={this.props.item.buyers && this.props.item.buyers.length} 
+                        target={this.props.item.targetNumOfBuyers} 
+                    />
                 </td>
                 <td className="price">{this.props.item.currency} {this.props.item.price}</td>
                 {this.getControls()}
