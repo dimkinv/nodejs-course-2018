@@ -157,6 +157,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
                 });
             })
             .catch(err => {
+                console.error('Something went wrong here...', err);
                 window.localStorage.removeItem(CACHE_KEY);
                 this.setState({
                     loading: false,
@@ -175,7 +176,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         this.state.loading ?
             <div>Loading...</div> :
             this.state.err ?
-                <div>oh no! {JSON.stringify(this.state.err)}</div> :
+                <div style={{fontSize: '30px'}}>We messed up...🤷</div> :
                 <App
                     username={this.state.username}
                     onLogout={this.onLogout}
