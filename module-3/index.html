@@ -22,9 +22,29 @@
             </section>
             <section>
                 <h2>In This Module</h2>
+                <p>Middlewares</p>
                 <p>Events</p>
                 <p>Promises</p>
-                <p>Async/Await</p>
+                <p>Async-Await</p>
+                <p>File API</p>
+            </section>
+            <section>
+                <h2>Middleware example</h2>
+                <pre class="wide">
+                        <code data-trim data-noescape class="ts">
+                            function authenticate(req: express.Request, res: express.Response, next: express.NextFunction) {
+                                const userId = req.header('x-auth');
+                            
+                                if (!userId || userId !== 'Danny') {
+                                    console.log(userId);
+                                    res.status(401).send('Authentication Error');
+                                }
+                            
+                                res.set('x-user-surname', 'Vernovsky');
+                                next();
+                            }
+                        </code>
+                    </pre>
             </section>
             <section>
                 <h2>Observer</h2>
@@ -43,6 +63,44 @@
                         </td>
                     </tr>
                 </table>
+            </section>
+            <section>
+                <h2>Events</h2>
+                Emitter side
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        const event = new EventEmitter();
+                        event.emit('data-received', {data: 'some new data'});
+                    </code>
+                </pre> Observer side
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        event.on('data-received', (eventArgs)=>{
+                            // do something with the data
+                        });
+                    </code>
+                </pre>
+            </section>
+            <section>
+                <h2>Node.js Event Emitter
+                </h2>
+                Notable EventEmitter functions
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        emitter.addListener(eventName, listener)
+                        emitter.emit(eventName[, ...args])
+                        emitter.eventNames()
+                        emitter.listenerCount(eventName)
+                        emitter.listeners(eventName)
+                        emitter.on(eventName, listener)
+                        emitter.once(eventName, listener)
+                    </code>
+                </pre>
+            </section>
+            <section>
+                <h2>Promises</h2>
+                <p class="fragment">So whats the problem with callback anyway?</p>
+                <img class="fragment" src="../assets/callbackhell.png"/>
             </section>
         </div>
         <script src="../node_modules/reveal.js/lib/js/head.min.js"></script>

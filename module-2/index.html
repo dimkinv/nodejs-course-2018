@@ -41,12 +41,10 @@
             </section>
             <section>
                 <h2>In This Module</h2>
-                <p>Node.js AFAP
-                    <span style="font-size: 10px;">As fast as possible</span>
+                <p>Node.js 
+                    <span style="font-size: 22px;">As fast as possible</span>
                 </p>
                 <p>Hello Express.js</p>
-                <p>HTTP DEMO</p>
-                <p>Middlewares</p>
                 <p>REST API</p>
             </section>
             <section>
@@ -91,24 +89,6 @@
                 <p class="fragment">responsible to call next middleware</p>
             </section>
             <section>
-                <h2>Middleware example</h2>
-                <pre class="wide">
-                    <code data-trim data-noescape class="ts">
-                        function authenticate(req: express.Request, res: express.Response, next: express.NextFunction) {
-                            const userId = req.header('x-auth');
-                        
-                            if (!userId || userId !== 'Danny') {
-                                console.log(userId);
-                                res.status(401).send('Authentication Error');
-                            }
-                        
-                            res.set('x-user-surname', 'Vernovsky');
-                            next();
-                        }
-                    </code>
-                </pre>
-            </section>
-            <section>
                 <h2>rest api</h2>
                 <div id='rest_video_fragment' class="fragment">
                     <p>Setting up REST API standard</p>
@@ -119,7 +99,7 @@
             </section>
             <section>
                 <h2> rest
-                    <span style="font-size: 18px">as fast as possible</span>
+                    <a href="https://www.youtube.com/channel/UCsXVk37bltHxD1rDPwtNM8Q"><span style="font-size: 26px">In a nutshell(kurzgesagt)</span></a>
                 </h2>
                 <table>
                     <tr>
@@ -207,6 +187,35 @@
             </section>
             <section>
                 <img src="../assets/demotime.png" alt="">
+            </section>
+            <section>
+                <table>
+                    <tr>
+                        <td style="width:50%">
+                            <img src="../assets/exercise-time.png"/>
+                        </td>
+                        <td style="vertical-align: top; font-size:16px">
+                            <ul style="list-style-type: none">
+                                <li>Build REST API for marketing chrome extension
+                                    <ul>
+                                        <li>Add GET request to fetch all records from <code>/api/items</code></li>
+                                        <li>Add POST request to add new item <code>/api/items</code></li>
+                                        <li>Add PUT request to update subscription on item <code>/api/items</code></li>
+                                        <li>Add DELETE request to remove subscription on item or remove the item <code>/api/items</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <h4>notes</h4>
+                            <ul>
+                                <li>User can't add himself to it's own item (400)</li>
+                                <li>User can't subscribe twice to the same item (400)</li>
+                                <li>Item not found error (404)</li>
+                                <li>User can't remove other user item</li>
+                                <li>User can't remove item he's not subscribed to (400)</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
             </section>
             </div>
         </div>
