@@ -14,6 +14,9 @@
 
 Group shopping icon should be added to the top bar
 
+To enable web-sockets in module 5, go to [chrome://extensions](chrome://extensions), open Group shopping options and check *My server supports web-sockets*.
+
+
 # Server
 Server should run on localhost:3000
 ## Endpoints:
