@@ -21,6 +21,6 @@
     "simple-autoreload-server": "^0.2.7"
   },
   "scripts": {
-    "start": "autoreload-server & tsc -w"
+    "start": "autoreload-server --port 9000 & tsc -w"
   }
 }
