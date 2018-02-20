@@ -27,6 +27,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         this.setState({username}, () => {
             window.localStorage.setItem(USERNAME, username);
             headers.append(X_AUTH, username);
+            this.getItems();
         });
     }
 
@@ -40,7 +41,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
     addNewItem(): void {
         getItemFromPage()
             .then((item: Item) => {
-                return { ...item, targetNumOfBuyers: 10, attuid: this.state.username };
+                return { ...item, targetNumOfBuyers: 10, attuid: this.state.username, buyers: [] };
             })
             .then((item: Item) => this.createGroupShopping(item))
             .catch((err: string) => {
@@ -54,7 +55,9 @@ class AppContainer extends React.Component<{}, AppContainerState> {
 
     createGroupShopping(item: Item): Promise<void> {
         return fetch(baseUrl, { method: 'POST', headers, body: JSON.stringify(item) })
-            .then(res => res.json()).then((createdItem: Item) => {
+            .then((res) => this.handleHTTPErrors(res))
+            .then(res => res.json())
+            .then((createdItem: Item) => {
                 this.setState((prevState => ({
                     err: '',
                     items: prevState.items.concat(createdItem),
@@ -65,17 +68,19 @@ class AppContainer extends React.Component<{}, AppContainerState> {
 
     deleteItem(itemId: number) {
         console.log('deleting...', itemId);
-        fetch(`${baseUrl}/${itemId}`, { headers, method: 'DELETE' }).then(res => {
-            this.setState(
-                (prevState) => ({
-                    err: '',
-                    items: prevState.items.filter(item => item.id !== itemId),
-                    loading: false,
-                }), 
-                () => {
-                    this.updateItemsCache(this.state.items);
-                });
-        });
+        fetch(`${baseUrl}/${itemId}`, { headers, method: 'DELETE' })
+            .then((res) => this.handleHTTPErrors(res))
+            .then(res => {
+                this.setState(
+                    (prevState) => ({
+                        err: '',
+                        items: prevState.items.filter(item => item.id !== itemId),
+                        loading: false,
+                    }),
+                    () => {
+                        this.updateItemsCache(this.state.items);
+                    });
+            });
     }
 
     joinShopping(item: Item): void{
@@ -84,22 +89,24 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         }
         const buyers = item.buyers.concat(this.state.username);
         const updateItem = {...item, buyers};
-        fetch(`${baseUrl}/${item.id}`, { method: 'PUT', headers }).then(res => {
-            this.setState(
-                (prevState) => ({
-                    err: '',
-                    items: prevState.items.map(oldItem => {
-                        if (oldItem.id === item.id) {
-                            return updateItem;
-                        }
-                        return oldItem;
+        fetch(`${baseUrl}/${item.id}`, { method: 'PUT', headers })
+            .then((res) => this.handleHTTPErrors(res))
+            .then(res => {
+                this.setState(
+                    (prevState) => ({
+                        err: '',
+                        items: prevState.items.map(oldItem => {
+                            if (oldItem.id === item.id) {
+                                return updateItem;
+                            }
+                            return oldItem;
+                        }),
+                        loading: false,
                     }),
-                    loading: false,
-                }), 
-                () => {
-                    this.updateItemsCache(this.state.items);
-                });
-        });
+                    () => {
+                        this.updateItemsCache(this.state.items);
+                    });
+            });
     }
 
     cancelJoining(item:Item): void {
@@ -108,45 +115,29 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         }
         const buyers = item.buyers.filter(buyer => buyer!==this.state.username);
         const updateItem = {...item, buyers};
-        fetch(`${baseUrl}/${item.id}`, { method: 'DELETE', headers }).then(res => {
-            this.setState(
-                (prevState) => ({
-                    err: '',
-                    items: prevState.items.map(oldItem => {
-                        if (oldItem.id === item.id) {
-                            return updateItem;
-                        }
-                        return oldItem;
+        fetch(`${baseUrl}/${item.id}`, { method: 'DELETE', headers })
+            .then((res) => this.handleHTTPErrors(res))
+            .then(res => {
+                this.setState(
+                    (prevState) => ({
+                        err: '',
+                        items: prevState.items.map(oldItem => {
+                            if (oldItem.id === item.id) {
+                                return updateItem;
+                            }
+                            return oldItem;
+                        }),
+                        loading: false,
                     }),
-                    loading: false,
-                }), 
-                () => {
-                    this.updateItemsCache(this.state.items);
-                });
-        });
+                    () => {
+                        this.updateItemsCache(this.state.items);
+                    });
+            });
     }
 
-
-
-    componentDidMount() {
-        const username = window.localStorage.getItem(USERNAME);
-        if(username) {
-            this.setState({
-                username
-            });
-        }
-
-        const cachedItems = window.localStorage.getItem(CACHE_KEY);
-        if (cachedItems) {
-            this.setState({
-                items: JSON.parse(cachedItems) as Item[],
-                loading: false
-            });
-        } else {
-            this.setState({loading: true});
-        }
-
-        fetch(baseUrl)
+    getItems() {
+        fetch(baseUrl, {headers})
+            .then((res)=> this.handleHTTPErrors(res))
             .then(res => res.json())
             .then(items => {
                 this.setState({
@@ -164,6 +155,52 @@ class AppContainer extends React.Component<{}, AppContainerState> {
                     err
                 });
             });
+    }
+
+
+
+    componentDidMount() {
+        const username = window.localStorage.getItem(USERNAME);
+        if(!username) {
+            console.log('Please login...');
+            this.onLogout();
+            return
+        }
+
+        console.log('User already logged in!');
+        this.setState({
+            username
+        });
+        headers.append(X_AUTH, username);
+        
+        // load items from cache
+        const cachedItems = window.localStorage.getItem(CACHE_KEY);
+        if (cachedItems) {
+            this.setState({
+                items: JSON.parse(cachedItems) as Item[],
+                loading: false
+            });
+        } else {
+            this.setState({loading: true});
+        }
+
+        this.getItems();
+    }
+
+    handleHTTPErrors(res: Response) {
+        if(res.status === 401) {
+            window.localStorage.removeItem(CACHE_KEY);
+            this.setState({
+                loading: false,
+                username: '',
+            });
+            return Promise.reject('Please login...');;
+        }
+
+        if(res.status >= 400){
+            return Promise.reject(res);
+        }
+        return Promise.resolve(res);
     }
 
     updateItemsCache(items: Item[]) {
