@@ -160,6 +160,14 @@ class AppContainer extends React.Component<{}, AppContainerState> {
 
 
     componentDidMount() {
+        // Get websocket options
+        chrome.storage.sync.get({
+            webSocket: false
+        }, items => {
+            this.setState({webSocket: items.webSocket});
+        });
+
+        // Check if user logged in
         const username = window.localStorage.getItem(USERNAME);
         if(!username) {
             console.log('Please login...');
