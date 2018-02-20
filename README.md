@@ -1,7 +1,23 @@
 # Group Shopping Application
-Server base url: localhost:3000
-# Endpoints
-## Get all items 
+# Client
+## Requirements 
+- Chrome
+- Node.js
+- Yarn
+
+## Installation
+1. Go to chrome-extension lib
+2. Install dependencies - `yarn`
+3. Build - `yarn build`
+4. Open Chrome and navigate to [chrome://extensions](chrome://extensions)
+5. Click `Load unpacked extension...` and select `build` folder
+
+Group shopping icon should be added to the top bar
+
+# Server
+Server should run on localhost:3000
+## Endpoints:
+### Get all items 
 `GET /items`
 
 Response
@@ -16,7 +32,7 @@ Response
 }
 ```
 
-## Create new offer
+### Create new offer
 `POST /items`
 
 headers:
@@ -41,7 +57,7 @@ Response:
 }
 ```
 
-## Delete offer
+### Delete offer
 `DELETE /items/:id`
 headers:
 ```
@@ -55,7 +71,7 @@ Response:
 204 No content
 ```
 
-## Join purchase 
+### Join purchase 
 `PUT /items/:id`
 headers:
 ```
@@ -68,7 +84,7 @@ Response:
 200 OK
 ```
 
-## Cancel Joining
+### Cancel Joining
 `DELETE /items/:id`
 headers:
 ```
@@ -88,23 +104,23 @@ Response:
 - Create basic nodejs project
 
 ## Module 2
-- in-memory endpoints
+- In-memory endpoints
 
 ## Module 3 
-- implement persistance interface
-- move in-memory api to file system
-- wrap fs callback with async api
+- Implement authentication middleware
+- Implement persistance interface
+- Move in-memory api to file system
+- Wrap fs callback with async api
 
 ## Module 4 
-- move persistant api to MongoDB
+- Move persistant api to MongoDB
 
 ## Module 5 
-- broadcast all users when item is added/removed to the list
-- broadcast when someone click +1/-1 on item
+- Broadcast all users when item is added/removed to the list
+- Broadcast when someone click +1/-1 on item
 
 ## Module 6 
-
-- write unit tests to project
+- Write unit tests to project
 
 ## Module 7
-- publish app with pm2
+- Publish app with pm2
