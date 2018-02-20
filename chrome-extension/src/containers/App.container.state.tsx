@@ -5,4 +5,5 @@ export class AppContainerState {
     items: Item[];
     err: string;
     username: string;
+    webSocket: boolean;
 }
