@@ -108,6 +108,7 @@ Response:
 
 ## Module 2
 - In-memory endpoints
+- Static files API 
 
 ## Module 3 
 - Implement authentication middleware
@@ -119,11 +120,17 @@ Response:
 - Move persistant api to MongoDB
 
 ## Module 5 
-- Broadcast all users when item is added/removed to the list
-- Broadcast when someone click +1/-1 on item
+- WS: Broadcast all users when item is added/removed to the list
+- WS: Broadcast when someone click +1/-1 on item
+- Pipes: Get item image, pipe to fs, update db imageUrl for local version so that the client will get the local version
 
 ## Module 6 
 - Write unit tests to project
 
 ## Module 7
 - Publish app with pm2
+
+
+TODO:
+Danny: add slide for static files API in module 2
+Nabil: add slide for pipes in module 5
