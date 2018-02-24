@@ -11,13 +11,17 @@
     "express": "^4.16.2",
     "highlightjs": "^9.10.0",
     "jsdom": "^11.6.1",
-    "reveal.js": "^3.6.0"
+    "reveal.js": "^3.6.0",
+    "socket.io": "^2.0.4",
+    "mongodb": "^3.0.2"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/cors": "^2.8.3",
     "@types/express": "^4.11.1",
     "@types/jsdom": "^11.0.4",
+    "@types/socket.io": "^1.4.31",
+    "@types/mongodb": "^3.0.5",
     "simple-autoreload-server": "^0.2.7"
   },
   "scripts": {

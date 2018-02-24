@@ -7,20 +7,367 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="../node_modules/reveal.js/css/reveal.css">
-    <link rel="stylesheet" href="../node_modules/reveal.js/css/theme/league.css">
+    <link rel="stylesheet" href="../node_modules/reveal.js/css/theme/beige.css">
+    <link rel="stylesheet" href="../node_modules/reveal.js/lib/css/zenburn.css">
+    <link rel="stylesheet" href="../styles/main.css">
 </head>
 
 <body>
-    <div class="reveal">
-        <div class="slides">
-            <section>Slide 1</section>
-            <section>Slide 2</section>
-        </div>
+<div class="att_logo"></div>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <h1>Persistence</h1>
+            <sub>By Nabil Naffar & Danny Vernovsky & Almog Laktivi</sub>
+        </section>
+        <section>
+            <h2>In This Module</h2>
+            <p>MongoDB</p>
+            <p>MySQL</p>
+        </section>
+        <section>
+            <h2>MongoDB introduction</h2>
+            <ul>
+                <li>Most common NOSQL database</li>
+                <li>Document database - collections which stores documents</li>
+                <li>Drivers to most popular programing language (including NodeJS)</li>
+                <li>Installation and very well-documented documentation can be found <a src="https://docs.mongodb.com/">here</a></li>
+            </ul>
+        </section>
+        <section>
+            <section>
+                <h2>MongoDB CRUD via NodeJS</h2>
+                <ul>
+                    <li>Create</li>
+                    <li>Read</li>
+                    <li>Update</li>
+                    <li>Delete</li>
+                </ul>
+            </section>
+            <section>
+                Connect to MongoDB
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        import { MongoClient, Db } from "mongodb"
+
+
+                        class DBClient {
+                            private url = "mongodb://localhost:27017/test";
+                            public db: Db;
+
+                            public async connect() {
+                                this.db = await MongoClient.connect(this.url);
+                                console.log("Connected to db");
+
+                                return this.db;
+                            }
+                        }
+
+                        export = new DBClient();
+                    </code>
+                    database-client.ts
+                </pre>
+            </section>
+            <section>
+                Create
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        import DBClient = require("./database-client");
+
+                        class App {
+                        public async start() {
+                            try {
+                                let db = await DBClient.connect();
+
+                                let results =
+                                    await db.collection("products").insertOne({
+                                    topic: "camera", cost: 10
+                                });
+
+                            } catch (error) {
+                                console.log("Unable to connect to db");
+                            }
+                        }
+                    }
+                    </code>
+                    You can also use 'insertMany' method to insert several documents.
+                </pre>
+            </section>
+            <section>
+                Read
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        import DBClient = require("./database-client");
+
+                        class App {
+                        public async start() {
+                            try {
+                                let db = await DBClient.connect();
+
+                                let products = await db.collection("products")
+                                                                .find().toArray();
+                            } catch (error) {
+                                console.log("Unable to connect to db");
+                            }
+                        }
+                    }
+                    </code>
+                    You can also use 'findOne' method and declare filter
+                </pre>
+            </section>
+            <section>
+                Update
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        import DBClient = require("./database-client");
+
+                        class App {
+                        public async start() {
+                            try {
+                                let db = await DBClient.connect();
+
+                                let result = db.collection("products").updateOne(
+                                                    {topic: "camera"}, {cost: 12});
+                            } catch (error) {
+                                console.log("Unable to connect to db");
+                            }
+                        }
+                    }
+                    </code>
+                    You can also use 'updateMany' method to update several documents.
+                </pre>
+            </section>
+            <section>
+                Delete
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        import DBClient = require("./database-client");
+
+                        class App {
+                        public async start() {
+                            try {
+                                let db = await DBClient.connect();
+
+                                db.collection("products").deleteOne({progress: 10});
+                            } catch (error) {
+                                console.log("Unable to connect to db");
+                            }
+                        }
+                    }
+                    </code>
+                    You can also use 'deleteMany' method to delete several documents.
+                </pre>
+            </section>
+        </section>
+        <section>
+            <img src="../assets/demotime.png" alt="">
+        </section>
+        <section>
+            <table>
+                <tr>
+                    <td style="width:50%">
+                        <img src="../assets/exercise-time.png"/>
+                    </td>
+                    <td> TODO: Write exercise</td>
+                    <!--<td style="vertical-align: top; font-size:16px">-->
+                        <!--<ul style="list-style-type: none">-->
+                            <!--<li>Build REST API for marketing chrome extension-->
+                                <!--<ul>-->
+                                    <!--<li>Add GET request to fetch all records from <code>/api/items</code></li>-->
+                                    <!--<li>Add POST request to add new item <code>/api/items</code></li>-->
+                                    <!--<li>Add PUT request to update subscription on item <code>/api/items</code></li>-->
+                                    <!--<li>Add DELETE request to remove subscription on item or remove the item <code>/api/items</code></li>-->
+                                <!--</ul>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                        <!--<h4>notes</h4>-->
+                        <!--<ul>-->
+                            <!--<li>User can't add himself to it's own item (400)</li>-->
+                            <!--<li>User can't subscribe twice to the same item (400)</li>-->
+                            <!--<li>Item not found error (404)</li>-->
+                            <!--<li>User can't remove other user item</li>-->
+                            <!--<li>User can't remove item he's not subscribed to (400)</li>-->
+                        <!--</ul>-->
+                    <!--</td>-->
+                </tr>
+            </table>
+        </section>
+        <section>
+            <h2>MySQL introduction</h2>
+            <ul>
+                <li>Common RDBMS database</li>
+                <li>Uses SQL language</li>
+                <li>Have the ability to work with both small and large data sets</li>
+                <li>Drivers to most popular programing languages (including NodeJS)</li>
+            </ul>
+        </section>
+        <section>
+            <section>
+                <h2>MySQL CRUD via NodeJS</h2>
+                <ul>
+                    <li>Create</li>
+                    <li>Read</li>
+                    <li>Update</li>
+                    <li>Delete</li>
+                    <li>Events</li>
+                </ul>
+            </section>
+            <section>
+                Connect to MySQL
+                <pre>
+                    npm install --save mysql
+                    npm install --save @types/mysql
+                    <code data-trim data-noescape class="ts">
+                        import {createConnection} from 'mysql';
+
+
+                        class DBClient {
+                            let connection = createConnection({
+                                host: 'localhost',
+                                user: 'me',
+                                password: 'test'
+                            });
+
+                            return connection;
+                        }
+
+                        export = new DBClient();
+                    </code>
+                </pre>
+            </section>
+            <section>
+                Create
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        import {format} from 'mysql';
+                        import DBClient = require("./database-client");
+
+                        class App {
+                        public async start() {
+                            try {
+                                DBClient.connect()
+
+                                sql = 'INSERT INTO posts SET ?';
+                                post = { id: 1, title: 'Hello MySQL' };
+                                sql = format(sql, post);
+
+                                let query = DBClient.query(sql, function (err, result) {
+                                    console.log("Success to insert: ",
+                                                JSON.stringify(post));
+                                });
+                            } catch (error) {
+                                console.log("Unable to connect to db");
+                            }
+                        }
+                    }
+                    </code>
+                </pre>
+            </section>
+            <section>
+                Read
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        import DBClient = require("./database-client");
+
+                        class App {
+                        public async start() {
+                            try {
+                                DBClient.query('SELECT * from users', (err, rows, fields) => {
+                                    if (err) throw err;
+
+                                    console.log('The solution is: ', rows);
+                                });
+                            } catch (error) {
+                                console.log("Unable to connect to db");
+                            }
+                        }
+                    }
+                    </code>
+                </pre>
+            </section>
+            <section>
+                Update
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        import DBClient = require("./database-client");
+
+                        class App {
+                        public async start() {
+                            try {
+                                DBClient.connect()
+
+                                let sql = 'UPDATE posts SET title = :title';
+                                let put = { title: 'Hello MySQL' });
+                                let query = DBClient.query(sql, put);
+                            } catch (error) {
+                                console.log("Unable to connect to db");
+                            }
+                        }
+                    }
+                    </code>
+                </pre>
+            </section>
+            <section>
+                Delete
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        import DBClient = require("./database-client");
+
+                        class App {
+                        public async start() {
+                            try {
+                                DBClient.connect()
+
+                                let sql = 'DELETE FROM posts WHERE title = "wrong"';
+
+                                DBClient.query(sql, function (err: mysql.QueryError, result: mysql.OkPacket) {
+                                    console.log('deleted ' + result.affectedRows + ' rows');
+                                });
+                            } catch (error) {
+                                console.log("Unable to connect to db");
+                            }
+                        }
+                    }
+                    </code>
+                </pre>
+            </section>
+            <section>
+                Events (result, error, fields, packet, end)
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        import DBClient = require("./database-client");
+
+                        class App {
+                        public async start() {
+                            try {
+                                DBClient.connect()
+
+                                DBClient.on('error', function (err: MysqlError) {
+                                    console.log('error raised : ' + err);
+                                });
+                            } catch (error) {
+                                console.log("Unable to connect to db");
+                            }
+                        }
+                    }
+                    </code>
+                </pre>
+            </section>
+        </section>
     </div>
-    <script src="../node_modules/reveal.js/js/reveal.js"></script>
-    <script>
-        Reveal.initialize();
-    </script>
+</div>
+<script src="../node_modules/reveal.js/lib/js/head.min.js"></script>
+<script src="../node_modules/reveal.js/js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        history: true,
+        dependencies: [
+            { src: '../node_modules/reveal.js/plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+            { src: '../node_modules/reveal.js/plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+            { src: '../node_modules/reveal.js/plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+        ]
+    });
+</script>
 </body>
 
 </html>
