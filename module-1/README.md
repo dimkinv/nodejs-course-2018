@@ -10,6 +10,9 @@ Full yarn CLI documentation can be found in: [yarn cli](https://yarnpkg.com/en/d
 ## Install package and add to package.json dependencies
 `yarn add PACKAGE_NAME`
 
+## Install package globally (available to all projects, won't add to package.json)
+`yarn global add PACKAGE_NAME`
+
 ## Install package and add to package.json DEV dependencies
 `yarn add -D PACKAGE_NAME`
 
@@ -27,3 +30,4 @@ Full yarn CLI documentation can be found in: [yarn cli](https://yarnpkg.com/en/d
 
 ## remove yarn config
 `yarn config delete KEY`
+
