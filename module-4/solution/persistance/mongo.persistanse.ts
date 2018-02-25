@@ -6,64 +6,62 @@ import Item from "../../../models/Item";
 
 export class MongoPersistance implements PersistanceInterface {
     async deleteItem(itemId: number): Promise<void> {
-        let promise = new Promise<void>();
-        try {
-            let db = await MongoDBClient.connect();
-            await db.collection(MongoDBClient.collectionName).deleteOne({ id: itemId});
-            promise.resolve();
-        } catch(error) {
-            promise.reject(error);
-        }
+        let db = await MongoDBClient.connect();
+        let result = await db.collection(MongoDBClient.collectionName).deleteOne({ id: itemId});
 
-        return promise;
+        return new Promise<Item>((resolve, reject) => {
+            if(!result) {
+                reject("Error deleting item");
+            }
+            resolve();
+        });
     }
 
     async getItems(): Promise<Item[]> {
-        let promise = new Promise<Item[]>();
-        try {
-            let db = await MongoDBClient.connect();
-            promise.resolve((await db.collection(MongoDBClient.collectionName).find<Item>()).toArray());
-        } catch(error) {
-            promise.reject(error);
-        }
+        let db = await MongoDBClient.connect();
+        let result = await db.collection(MongoDBClient.collectionName).find<Item>({});
 
-        return promise;
+        return new Promise<Item>((resolve, reject) => {
+            if(!result) {
+                reject("Error finding items");
+            }
+            resolve(result.toArray());
+        });
     }
 
     async getItemById(itemId: number): Promise<Item> {
-        let promise = new Promise<Item>();
-        try {
-            let db = await MongoDBClient.connect();
-            promise.resolve(await db.collection(MongoDBClient.collectionName).findOne<Item>({ id: itemId }));
-        } catch(error) {
-            promise.reject(error);
-        }
+        let db = await MongoDBClient.connect();
+        let result = await db.collection(MongoDBClient.collectionName).findOne<Item>({ id: itemId });
 
-        return promise;
+        return new Promise<Item>((resolve, reject) => {
+            if(!result) {
+                reject("Error creating item in mongo");
+            }
+            resolve(result);
+        });
     }
 
-    async insertItem(item: Item): Promise<Object> {
-        let promise = new Promise<Object>();
-        try {
-            let db = await MongoDBClient.connect();
-            promise.resolve((await db.collection(MongoDBClient.collectionName).insertOne(item)).result);
-        } catch(error) {
-            promise.reject(error);
-        }
+    async insertItem(item: Item): Promise<Item> {
+        let db = await MongoDBClient.connect();
+        let result = db.collection(MongoDBClient.collectionName).insertOne(item);
 
-        return promise;
+        return new Promise<Item>((resolve, reject) => {
+            if(!result) {
+                reject("Error creating item in mongo");
+            }
+            resolve(item);
+        });
     }
 
     async updateItem(itemId: number, item: Item): Promise<void> {
-        let promise = new Promise<void>();
-        try {
-            let db = await MongoDBClient.connect();
-            await db.collection(MongoDBClient.collectionName).updateOne({ id: itemId }, item);
-            promise.resolve();
-        } catch(error) {
-            promise.reject(error);
-        }
+        let db = await MongoDBClient.connect();
+        let result = await db.collection(MongoDBClient.collectionName).findOneAndUpdate({ id: itemId }, item);
 
-        return promise;
+        return new Promise<Item>((resolve, reject) => {
+            if(!result) {
+                reject("Error creating item in mongo");
+            }
+            resolve(item);
+        });
     }
 }
