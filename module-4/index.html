@@ -50,20 +50,24 @@
                     <code data-trim data-noescape class="ts">
                         import { MongoClient, Db } from "mongodb"
 
-
                         class DBClient {
-                            private url = "mongodb://localhost:27017/test";
+                            private uri = "mongodb://localhost:27017";
+                            private dbName = "items";
+                            public collectionName = "items";
                             public db: Db;
-
-                            public async connect() {
-                                this.db = await MongoClient.connect(this.url);
-                                console.log("Connected to db");
-
-                                return this.db;
+                            public async connect():Promise<Db> {
+                                let promise = new Promise<Db>();
+                                try {
+                                    let connection = await MongoClient.connect(this.uri);
+                                    this.db = await connection.db(this.dbName);
+                                    promise.resolve(this.db)
+                                } catch(error) {
+                                    promise.reject(error);
+                                }
+                                return promise;
                             }
                         }
-
-                        export = new DBClient();
+                        export default new DBClient();
                     </code>
                     database-client.ts
                 </pre>
@@ -72,7 +76,7 @@
                 Create
                 <pre>
                     <code data-trim data-noescape class="ts">
-                        import DBClient = require("./database-client");
+                        import DBClient from "./database-client";
 
                         class App {
                         public async start() {
@@ -97,7 +101,7 @@
                 Read
                 <pre>
                     <code data-trim data-noescape class="ts">
-                        import DBClient = require("./database-client");
+                        import DBClient from "./database-client";
 
                         class App {
                         public async start() {
@@ -119,7 +123,7 @@
                 Update
                 <pre>
                     <code data-trim data-noescape class="ts">
-                        import DBClient = require("./database-client");
+                        import DBClient from "./database-client";
 
                         class App {
                         public async start() {
@@ -141,7 +145,7 @@
                 Delete
                 <pre>
                     <code data-trim data-noescape class="ts">
-                        import DBClient = require("./database-client");
+                        import DBClient from "./database-client";
 
                         class App {
                         public async start() {
@@ -168,27 +172,27 @@
                     <td style="width:50%">
                         <img src="../assets/exercise-time.png"/>
                     </td>
-                    <td> TODO: Write exercise</td>
-                    <!--<td style="vertical-align: top; font-size:16px">-->
-                        <!--<ul style="list-style-type: none">-->
-                            <!--<li>Build REST API for marketing chrome extension-->
-                                <!--<ul>-->
-                                    <!--<li>Add GET request to fetch all records from <code>/api/items</code></li>-->
-                                    <!--<li>Add POST request to add new item <code>/api/items</code></li>-->
-                                    <!--<li>Add PUT request to update subscription on item <code>/api/items</code></li>-->
-                                    <!--<li>Add DELETE request to remove subscription on item or remove the item <code>/api/items</code></li>-->
-                                <!--</ul>-->
-                            <!--</li>-->
-                        <!--</ul>-->
-                        <!--<h4>notes</h4>-->
-                        <!--<ul>-->
-                            <!--<li>User can't add himself to it's own item (400)</li>-->
-                            <!--<li>User can't subscribe twice to the same item (400)</li>-->
-                            <!--<li>Item not found error (404)</li>-->
-                            <!--<li>User can't remove other user item</li>-->
-                            <!--<li>User can't remove item he's not subscribed to (400)</li>-->
-                        <!--</ul>-->
-                    <!--</td>-->
+                    <td style="vertical-align: top; font-size:16px">
+                        <ul style="list-style-type: none">
+                            <li><h4>Create MongoDB database for extension items</h4>
+                                <ul>
+                                    <li>Move persistence layer to mongoDB CRUD</li>
+                                    <li>Create new collection for items. Name it 'items'</li>
+                                    <li>Create database client which will serve your controller</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <ul style="list-style-type: none">
+                            <li><h4>notes</h4></li>
+                            <ul>
+                                <li>Remove fs.persistanse.ts file</li>
+                                <li>You can use MongoDB shell to create, read, delete and update databases/collections/documents</li>
+                            </ul>
+                        </ul>
+                    </td>
                 </tr>
             </table>
         </section>
@@ -369,5 +373,4 @@
     });
 </script>
 </body>
-
 </html>
