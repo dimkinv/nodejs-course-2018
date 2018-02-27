@@ -49,21 +49,25 @@
                 <pre>
                     <code data-trim data-noescape class="ts">
                         import { MongoClient, Db } from "mongodb"
-
-
-                        class DBClient {
-                            private url = "mongodb://localhost:27017/test";
+                        class MongoDBClient {
+                            private uri = "mongodb://localhost:27017";
+                            private dbName = "test";
+                            public collectionName = "test";
                             public db: Db;
-
-                            public async connect() {
-                                this.db = await MongoClient.connect(this.url);
-                                console.log("Connected to db");
-
-                                return this.db;
+                            public async connect():Promise< Db> {
+                                return new Promise< Db>((resolve, reject) => {
+                                    MongoClient.connect(this.uri)
+                                    .then((connection) => {
+                                        this.db = connection.db(this.dbName);
+                                        resolve(this.db);
+                                    }).catch((error) => {
+                                        reject(error)
+                                    });
+                                });
                             }
                         }
-
-                        export = new DBClient();
+                        const client = new MongoDBClient();
+                        export default client;
                     </code>
                     database-client.ts
                 </pre>
@@ -72,21 +76,23 @@
                 Create
                 <pre>
                     <code data-trim data-noescape class="ts">
-                        import DBClient = require("./database-client");
+                        import DBClient from "./database-client";
 
                         class App {
                         public async start() {
-                            try {
-                                let db = await DBClient.connect();
+                            let db = await DBClient.connect();
 
-                                let results =
-                                    await db.collection("products").insertOne({
-                                    topic: "camera", cost: 10
-                                });
+                            let result =
+                                await db.collection("products").insertOne({
+                                topic: "camera", cost: 10
+                            });
 
-                            } catch (error) {
-                                console.log("Unable to connect to db");
-                            }
+                            return new Promise< Object>((resolve, reject) => {
+                                if(!result) {
+                                    reject("Error creating object in mongo");
+                                }
+                                resolve(result);
+                            });
                         }
                     }
                     </code>
@@ -97,18 +103,20 @@
                 Read
                 <pre>
                     <code data-trim data-noescape class="ts">
-                        import DBClient = require("./database-client");
+                        import DBClient from "./database-client";
 
                         class App {
                         public async start() {
-                            try {
-                                let db = await DBClient.connect();
-
-                                let products = await db.collection("products")
+                            let db = await DBClient.connect();
+                            let products = await db.collection("products")
                                                                 .find().toArray();
-                            } catch (error) {
-                                console.log("Unable to connect to db");
-                            }
+
+                            return new Promise< Object>((resolve, reject) => {
+                                if(!products) {
+                                    reject("Error reading object in mongo");
+                                }
+                                resolve(products);
+                            });
                         }
                     }
                     </code>
@@ -119,18 +127,20 @@
                 Update
                 <pre>
                     <code data-trim data-noescape class="ts">
-                        import DBClient = require("./database-client");
+                        import DBClient from "./database-client";
 
                         class App {
                         public async start() {
-                            try {
-                                let db = await DBClient.connect();
-
-                                let result = db.collection("products").updateOne(
+                            let db = await DBClient.connect();
+                            let result = db.collection("products").updateOne(
                                                     {topic: "camera"}, {cost: 12});
-                            } catch (error) {
-                                console.log("Unable to connect to db");
-                            }
+
+                            return new Promise< Object>((resolve, reject) => {
+                                if(!result) {
+                                    reject("Error updating object in mongo");
+                                }
+                                resolve(result);
+                            });
                         }
                     }
                     </code>
@@ -141,17 +151,20 @@
                 Delete
                 <pre>
                     <code data-trim data-noescape class="ts">
-                        import DBClient = require("./database-client");
+                        import DBClient from "./database-client";
 
                         class App {
                         public async start() {
-                            try {
-                                let db = await DBClient.connect();
+                            let db = await DBClient.connect();
+                            let result = db.collection("products").deleteOne({progress: 10});
 
-                                db.collection("products").deleteOne({progress: 10});
-                            } catch (error) {
-                                console.log("Unable to connect to db");
-                            }
+
+                            return new Promise< Object>((resolve, reject) => {
+                                if(!result) {
+                                    reject("Error deleting object in mongo");
+                                }
+                                resolve(result);
+                            });
                         }
                     }
                     </code>
@@ -168,27 +181,27 @@
                     <td style="width:50%">
                         <img src="../assets/exercise-time.png"/>
                     </td>
-                    <td> TODO: Write exercise</td>
-                    <!--<td style="vertical-align: top; font-size:16px">-->
-                        <!--<ul style="list-style-type: none">-->
-                            <!--<li>Build REST API for marketing chrome extension-->
-                                <!--<ul>-->
-                                    <!--<li>Add GET request to fetch all records from <code>/api/items</code></li>-->
-                                    <!--<li>Add POST request to add new item <code>/api/items</code></li>-->
-                                    <!--<li>Add PUT request to update subscription on item <code>/api/items</code></li>-->
-                                    <!--<li>Add DELETE request to remove subscription on item or remove the item <code>/api/items</code></li>-->
-                                <!--</ul>-->
-                            <!--</li>-->
-                        <!--</ul>-->
-                        <!--<h4>notes</h4>-->
-                        <!--<ul>-->
-                            <!--<li>User can't add himself to it's own item (400)</li>-->
-                            <!--<li>User can't subscribe twice to the same item (400)</li>-->
-                            <!--<li>Item not found error (404)</li>-->
-                            <!--<li>User can't remove other user item</li>-->
-                            <!--<li>User can't remove item he's not subscribed to (400)</li>-->
-                        <!--</ul>-->
-                    <!--</td>-->
+                    <td style="vertical-align: top; font-size:16px">
+                        <ul style="list-style-type: none">
+                            <li><h4>Create MongoDB database for extension items</h4>
+                                <ul>
+                                    <li>Move persistence layer to mongoDB CRUD</li>
+                                    <li>Create new collection for items. Name it 'items'</li>
+                                    <li>Create database client which will serve your controller</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <ul style="list-style-type: none">
+                            <li><h4>notes</h4></li>
+                            <ul>
+                                <li>Remove fs.persistanse.ts file</li>
+                                <li>You can use MongoDB shell to create, read, delete and update databases/collections/documents</li>
+                            </ul>
+                        </ul>
+                    </td>
                 </tr>
             </table>
         </section>
@@ -369,5 +382,4 @@
     });
 </script>
 </body>
-
 </html>
