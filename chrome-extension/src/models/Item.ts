@@ -10,4 +10,3 @@ export  default class Item {
     buyers: string[];
 }
 
-https://goo.gl/qBCDuM
