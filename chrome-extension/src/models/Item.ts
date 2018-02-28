@@ -9,4 +9,3 @@ export  default class Item {
     targetNumOfBuyers: number;
     buyers: string[];
 }
-
