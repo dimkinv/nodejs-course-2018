@@ -1,7 +1,7 @@
 import Item from '../models/Item';
 
 function runScriptOnWindow() {
-    const MONEY = /(\d+(.\d+)?)/;
+    const MONEY = /(\d+(,\d+)?(.\d+)?)/;
     const hostName = location.host;
     const SUPPORTED_SITES = {
         'aliexpress.com': {

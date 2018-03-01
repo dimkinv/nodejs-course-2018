@@ -7,20 +7,24 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="../node_modules/reveal.js/css/reveal.css">
-    <link rel="stylesheet" href="../node_modules/reveal.js/css/theme/league.css">
+    <link rel="stylesheet" href="../node_modules/reveal.js/css/theme/beige.css">
+    <link rel="stylesheet" href="../node_modules/reveal.js/lib/css/zenburn.css">
+    <link rel="stylesheet" href="../styles/main.css">
 </head>
 
 <body>
+    <div class="att_logo"></div>
     <div class="reveal">
         <div class="slides">
             <section>
                 <h1>Web sockets</h1>
-                <sub>By Nabil Naffar & Danny Vernovsky</sub>
+                <sub>By Nabil Naffar & Danny Vernovsky & Almog Laktivi</sub>
             </section>
             <section>
                 <h2>In This Module</h2>
                 <p>What is web socket?</p>
                 <p>socket.io</p>
+                <p>Streams</p>
             </section>
             <section>
                 <h2>http</h2>
@@ -57,19 +61,20 @@
             </section>
             <section>
                 <h2>Streams</h2>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/pPrO2jlay40?rel=0&amp;start=8940&autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/pPrO2jlay40?rel=0&amp;start=7000&autoplay=1&mute=1" frameborder="0"
+                    allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </section>
             <section>
                 <h2>What are Streams?</h2>
                 <ul>
                     <li>Collections of data</li>
                     <li>Just as Arrays or Strings
-                            <img src="assets/arrays-diagram.png" />
+                        <img src="assets/arrays-diagram.png" />
                     </li>
                     <li>Data might not be available all at once
-                            <img src="assets/streams-diagram.png" />
+                        <img src="assets/streams-diagram.png" />
                     </li>
-                    
+
                 </ul>
             </section>
             <section>
@@ -78,16 +83,48 @@
             </section>
             <section>
                 <h2>The pipe method</h2>
-                <p>```readableSrc
-                        .pipe(transformStream1)
-                        .pipe(transformStream2)
-                        .pipe(finalWrtitableDest)```</p>
+                <pre>
+                            <code data-trim data-noescape>
+                                readableSrc
+                                    .pipe(transformStream1)
+                                    .pipe(transformStream2)
+                                    .pipe(finalWritableDest)
+                            </code>
+                        </pre>
             </section>
         </div>
     </div>
+    <script src="../node_modules/reveal.js/lib/js/head.min.js"></script>
     <script src="../node_modules/reveal.js/js/reveal.js"></script>
     <script>
-        Reveal.initialize();
+        Reveal.initialize({
+            history: true,
+            dependencies: [
+                { src: '../node_modules/reveal.js/plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: '../node_modules/reveal.js/plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: '../node_modules/reveal.js/plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+            ]
+        });
+        let currentSlide;
+        Reveal.addEventListener('slidechanged', function (event) {
+            currentSlide = event.indexh;
+        });
+
+        Reveal.addEventListener('fragmentshown', function (event) {
+            if (event.fragment.id === 'rest_video_fragment') {
+                document.getElementById('rest_video').play()
+            }
+            console.log(event);
+        });
+
+        Reveal.addEventListener('fragmenthidden', function (event) {
+            if (event.fragment.id === 'rest_video_fragment') {
+                const video = document.getElementById('rest_video');
+                video.pause();
+                video.currentTime = 0;
+            }
+            console.log(event);
+        });
     </script>
 </body>
 

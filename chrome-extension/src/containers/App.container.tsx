@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as openSocket from 'socket.io-client';
 import App from '../components/App';
 import { AppContainerState } from './App.container.state';
 import Item from '../models/Item';
@@ -11,6 +12,8 @@ const USERNAME = 'NODEJS_COURSE_GROUP_SHOPPING_NAME';
 const X_AUTH = 'X-AUTH';
 const headers = new Headers({ 'Content-Type': 'application/json' });
 
+/* tslint:disable */
+
 class AppContainer extends React.Component<{}, AppContainerState> {
     constructor(props: {}) {
         super(props);
@@ -21,10 +24,19 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         this.onLogin = this.onLogin.bind(this);
         this.onLogout = this.onLogout.bind(this);
         this.cancelJoining = this.cancelJoining.bind(this);
+
+        // socket.io
+        this.openSocketConnection = this.openSocketConnection.bind(this);
+        this.handleSocketEvents = this.handleSocketEvents.bind(this);
+
+        // update store
+        this.addItemToState = this.addItemToState.bind(this);
+        this.deleteItemFromState = this.deleteItemFromState.bind(this);
+        this.updateItemInState = this.updateItemInState.bind(this);
     }
 
     onLogin(username: string) {
-        this.setState({username}, () => {
+        this.setState({ username }, () => {
             window.localStorage.setItem(USERNAME, username);
             headers.append(X_AUTH, username);
             this.getItems();
@@ -32,7 +44,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
     }
 
     onLogout() {
-        this.setState({username: ''}, () => {
+        this.setState({ username: '' }, () => {
             headers.delete(X_AUTH);
             window.localStorage.removeItem(USERNAME);
         });
@@ -45,11 +57,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             })
             .then((item: Item) => this.createGroupShopping(item))
             .catch((err: string) => {
-                /* tslint:disable */
                 console.log(err);
-                // this.setState({
-                //     err
-                // });
             });
     }
 
@@ -57,13 +65,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         return fetch(baseUrl, { method: 'POST', headers, body: JSON.stringify(item) })
             .then((res) => this.handleHTTPErrors(res))
             .then(res => res.json())
-            .then((createdItem: Item) => {
-                this.setState((prevState => ({
-                    err: '',
-                    items: prevState.items.concat(createdItem),
-                    loading: false,
-                })));
-            });
+            .then(this.addItemToState);
     }
 
     deleteItem(itemId: number) {
@@ -71,73 +73,39 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         fetch(`${baseUrl}/${itemId}`, { headers, method: 'DELETE' })
             .then((res) => this.handleHTTPErrors(res))
             .then(res => {
-                this.setState(
-                    (prevState) => ({
-                        err: '',
-                        items: prevState.items.filter(item => item.id !== itemId),
-                        loading: false,
-                    }),
-                    () => {
-                        this.updateItemsCache(this.state.items);
-                    });
+                this.deleteItemFromState(itemId);
             });
     }
 
-    joinShopping(item: Item): void{
+    joinShopping(item: Item): void {
         if (item.buyers.includes(this.state.username)) {
             return;
         }
         const buyers = item.buyers.concat(this.state.username);
-        const updateItem = {...item, buyers};
+        const updateItem = { ...item, buyers };
         fetch(`${baseUrl}/${item.id}`, { method: 'PUT', headers })
             .then((res) => this.handleHTTPErrors(res))
             .then(res => {
-                this.setState(
-                    (prevState) => ({
-                        err: '',
-                        items: prevState.items.map(oldItem => {
-                            if (oldItem.id === item.id) {
-                                return updateItem;
-                            }
-                            return oldItem;
-                        }),
-                        loading: false,
-                    }),
-                    () => {
-                        this.updateItemsCache(this.state.items);
-                    });
+                this.updateItemInState(updateItem);
             });
     }
 
-    cancelJoining(item:Item): void {
+    cancelJoining(item: Item): void {
         if (!item.buyers.includes(this.state.username)) {
             return;
         }
-        const buyers = item.buyers.filter(buyer => buyer!==this.state.username);
-        const updateItem = {...item, buyers};
+        const buyers = item.buyers.filter(buyer => buyer !== this.state.username);
+        const updateItem = { ...item, buyers };
         fetch(`${baseUrl}/${item.id}`, { method: 'DELETE', headers })
             .then((res) => this.handleHTTPErrors(res))
             .then(res => {
-                this.setState(
-                    (prevState) => ({
-                        err: '',
-                        items: prevState.items.map(oldItem => {
-                            if (oldItem.id === item.id) {
-                                return updateItem;
-                            }
-                            return oldItem;
-                        }),
-                        loading: false,
-                    }),
-                    () => {
-                        this.updateItemsCache(this.state.items);
-                    });
+                this.updateItemInState(updateItem);
             });
     }
 
     getItems() {
-        fetch(baseUrl, {headers})
-            .then((res)=> this.handleHTTPErrors(res))
+        fetch(baseUrl, { headers })
+            .then((res) => this.handleHTTPErrors(res))
             .then(res => res.json())
             .then(items => {
                 this.setState({
@@ -157,19 +125,21 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             });
     }
 
-
-
     componentDidMount() {
         // Get websocket options
         chrome.storage.sync.get({
             webSocket: false
-        }, items => {
-            this.setState({webSocket: items.webSocket});
+        }, (items) => {
+            this.setState({ webSocket: items.webSocket }, () => {
+                if (items.websocket) {
+                    this.openSocketConnection();
+                }
+            });
         });
 
         // Check if user logged in
         const username = window.localStorage.getItem(USERNAME);
-        if(!username) {
+        if (!username) {
             console.log('Please login...');
             this.onLogout();
             return
@@ -180,7 +150,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             username
         });
         headers.append(X_AUTH, username);
-        
+
         // load items from cache
         const cachedItems = window.localStorage.getItem(CACHE_KEY);
         if (cachedItems) {
@@ -189,14 +159,99 @@ class AppContainer extends React.Component<{}, AppContainerState> {
                 loading: false
             });
         } else {
-            this.setState({loading: true});
+            this.setState({ loading: true });
         }
 
         this.getItems();
     }
 
-    handleHTTPErrors(res: Response) {
-        if(res.status === 401) {
+    render() {
+        return !this.state.username ?
+            <Login onLogin={this.onLogin} /> :
+            this.state.loading ?
+                <div>Loading...</div> :
+                this.state.err ?
+                    <div style={{ fontSize: '30px' }}>We messed up...🤷</div> :
+                    (
+                        <App
+                            username={this.state.username}
+                            onLogout={this.onLogout}
+                            items={this.state.items}
+                            joinShopping={this.joinShopping}
+                            cancelJoining={this.cancelJoining}
+                            addNewItem={this.addNewItem}
+                            deleteItem={this.deleteItem}
+                        />
+                    );
+    }
+
+    private openSocketConnection() {
+        const socket = openSocket('http://localhost:3000');
+        this.setState({ socket }, this.handleSocketEvents);
+    }
+
+    private handleSocketEvents() {
+        this.state.socket.on('add-item', (item: Item) => {
+            this.addItemToState(item);
+        });
+        this.state.socket.on('delete-item', (item: Item) => {
+            if (item.id) {
+                this.deleteItemFromState(item.id);
+            }
+        });
+        this.state.socket.on('update-item', (item: Item) => {
+            this.updateItemInState(item);
+        });
+    }
+
+    private addItemToState(createdItem: Item) {
+        this.setState(
+            (prevState => ({
+                err: '',
+                items: prevState.items.concat(createdItem),
+                loading: false,
+            })),
+            () => {
+                this.updateItemsCache(this.state.items);
+            });
+    }
+
+    private deleteItemFromState(itemId: number) {
+        this.setState(
+            (prevState) => ({
+                err: '',
+                items: prevState.items.filter(item => item.id !== itemId),
+                loading: false,
+            }),
+            () => {
+                this.updateItemsCache(this.state.items);
+            });
+
+    }
+
+    private updateItemInState(updateItem: Item) {
+        this.setState(
+            (prevState) => ({
+                err: '',
+                items: prevState.items.map(oldItem => {
+                    if (oldItem.id === updateItem.id) {
+                        return updateItem;
+                    }
+                    return oldItem;
+                }),
+                loading: false,
+            }),
+            () => {
+                this.updateItemsCache(this.state.items);
+            });
+    }
+
+    private updateItemsCache(items: Item[]) {
+        window.localStorage.setItem(CACHE_KEY, JSON.stringify(items));
+    }
+
+    private handleHTTPErrors(res: Response) {
+        if (res.status === 401) {
             window.localStorage.removeItem(CACHE_KEY);
             this.setState({
                 loading: false,
@@ -205,31 +260,10 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             return Promise.reject('Please login...');;
         }
 
-        if(res.status >= 400){
+        if (res.status >= 400) {
             return Promise.reject(res);
         }
         return Promise.resolve(res);
-    }
-
-    updateItemsCache(items: Item[]) {
-        window.localStorage.setItem(CACHE_KEY, JSON.stringify(items));
-    }
-
-    render() {
-        return !this.state.username ? 
-        <Login onLogin={this.onLogin}/> :
-        this.state.loading ?
-            <div>Loading...</div> :
-            this.state.err ?
-                <div style={{fontSize: '30px'}}>We messed up...🤷</div> :
-                <App
-                    username={this.state.username}
-                    onLogout={this.onLogout}
-                    items={this.state.items}
-                    joinShopping={this.joinShopping}
-                    cancelJoining={this.cancelJoining}
-                    addNewItem={this.addNewItem}
-                    deleteItem={this.deleteItem} />;
     }
 }
 

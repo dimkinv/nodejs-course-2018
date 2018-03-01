@@ -1,8 +1,9 @@
 import * as fs from 'fs';
 import { Transform } from 'stream';
 
-const writableStream = fs.createWriteStream('./output.txt');
+
 const readableStream = process.stdin;
+const writableStream = fs.createWriteStream('./output.txt');
 
 const transformA = new Transform({
     transform(chunk, encoding, callback) {
@@ -14,3 +15,4 @@ const transformA = new Transform({
 readableStream
     .pipe(transformA)
     .pipe(writableStream);
+    
