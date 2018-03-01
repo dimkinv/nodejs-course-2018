@@ -9,7 +9,7 @@ export class MongoPersistance implements PersistanceInterface {
         let db = await MongoDBClient.connect();
         let result = await db.collection(MongoDBClient.collectionName).deleteOne({ id: itemId});
 
-        return new Promise<Item>((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             if(!result) {
                 reject("Error deleting item");
             }
@@ -21,7 +21,7 @@ export class MongoPersistance implements PersistanceInterface {
         let db = await MongoDBClient.connect();
         let result = await db.collection(MongoDBClient.collectionName).find<Item>({});
 
-        return new Promise<Item>((resolve, reject) => {
+        return new Promise<Item[]>((resolve, reject) => {
             if(!result) {
                 reject("Error finding items");
             }
@@ -57,11 +57,11 @@ export class MongoPersistance implements PersistanceInterface {
         let db = await MongoDBClient.connect();
         let result = await db.collection(MongoDBClient.collectionName).findOneAndUpdate({ id: itemId }, item);
 
-        return new Promise<Item>((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             if(!result) {
                 reject("Error creating item in mongo");
             }
-            resolve(item);
+            resolve();
         });
     }
 }
