@@ -171,7 +171,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             this.state.loading ?
                 <div>Loading...</div> :
                 this.state.err ?
-                    <div style={{ fontSize: '30px' }}>We messed up...🤷</div> :
+                    <div style={{ fontSize: '30px' }}><span>We messed up...🤷</span><br/><span style={{fontSize: '16px'}}>or it might be you...?😬 check your server...</span></div> :
                     (
                         <App
                             username={this.state.username}
