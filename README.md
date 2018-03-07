@@ -1,4 +1,40 @@
 # Group Shopping Application
+# Modules
+
+## Modules 1
+[Presentation](http://dimkinv.github.io/nodejs-course-2018/module-1)
+- Create basic nodejs project
+
+## Module 2
+[Presentation](http://dimkinv.github.io/nodejs-course-2018/module-2)
+- In-memory endpoints
+- Static files API 
+
+## Module 3 
+[Presentation](http://dimkinv.github.io/nodejs-course-2018/module-3)
+- Implement authentication middleware
+- Implement persistance interface
+- Move in-memory api to file system
+- Wrap fs callback with async api
+
+## Module 4 
+[Presentation](http://dimkinv.github.io/nodejs-course-2018/module-4)
+- Move persistant api to MongoDB
+
+## Module 5 
+[Presentation](http://dimkinv.github.io/nodejs-course-2018/module-5)
+- WS: Broadcast all users when item is added/removed to the list
+- WS: Broadcast when someone click +1/-1 on item
+- Pipes: Get item image, pipe to fs, update db imageUrl for local version so that the client will get the local version
+
+## Module 6 
+[Presentation](http://dimkinv.github.io/nodejs-course-2018/module-6)
+- Write unit tests to project
+
+## Module 7
+[Presentation](http://dimkinv.github.io/nodejs-course-2018/module-7)
+- Publish app with pm2
+
 # Client
 ## Requirements 
 - Chrome
@@ -15,36 +51,6 @@
 Group shopping icon should be added to the top bar
 
 To enable web-sockets in module 5, go to [chrome://extensions](chrome://extensions), open Group shopping options and check *My server supports web-sockets*.
-
-# Modules excercise
-
-## Modules 1
-[Presentation](http://dimkinv.github.io/nodejs-course-2018/module1)
-- Create basic nodejs project
-
-## Module 2
-- In-memory endpoints
-- Static files API 
-
-## Module 3 
-- Implement authentication middleware
-- Implement persistance interface
-- Move in-memory api to file system
-- Wrap fs callback with async api
-
-## Module 4 
-- Move persistant api to MongoDB
-
-## Module 5 
-- WS: Broadcast all users when item is added/removed to the list
-- WS: Broadcast when someone click +1/-1 on item
-- Pipes: Get item image, pipe to fs, update db imageUrl for local version so that the client will get the local version
-
-## Module 6 
-- Write unit tests to project
-
-## Module 7
-- Publish app with pm2
 
 # Server
 Server should run on localhost:3000
