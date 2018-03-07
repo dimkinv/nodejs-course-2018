@@ -1,6 +1,6 @@
 node_modules
 *.d.ts
-*.js
+module*/*.js
 yarn-error.log
 ~$*
 logfile.txt
