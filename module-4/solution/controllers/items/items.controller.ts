@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import Item from '../../../../models/Item';
 import { PersistanceInterface } from '../../persistance/persistance.interface';
 
-let currentId = 0;
 const AUTH_HEADER = 'x-auth';
 
 export class ItemsController {
@@ -26,7 +25,6 @@ export class ItemsController {
     async post(req: Request, res: Response) {
         try {
             const item = req.body as Item;
-            item.id = currentId++;
             const itemAfterInsert = await this.persistance.insertItem(item);
             console.log(itemAfterInsert);
             res.send(itemAfterInsert);
@@ -37,7 +35,7 @@ export class ItemsController {
 
     async put(req: Request, res: Response) {
         try {
-            const id = +req.params.id as number;
+            const id = req.params.id as string;
             const user: string = req.headers[AUTH_HEADER] as string;
 
             const item = await this.persistance.getItemById(id);

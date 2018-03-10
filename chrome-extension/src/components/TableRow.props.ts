@@ -5,5 +5,5 @@ export default interface TableRowProps {
     isMine: boolean;
     joinShopping(item: Item): void;
     cancelJoining(item: Item): void;
-    deleteItem(id: number): void;
+    deleteItem(id: string): void;
 }

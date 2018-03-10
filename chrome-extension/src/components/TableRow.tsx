@@ -13,21 +13,21 @@ class TableRow extends React.Component<TableRowProps> {
     }
 
     onJoinShopping(event: React.FormEvent<HTMLButtonElement>) {
-        if (this.props.item.id !== undefined) {
+        if (this.props.item._id !== undefined) {
             this.props.joinShopping(this.props.item);
         }
     }
 
     onCancelJoining(event: React.FormEvent<HTMLButtonElement>) {
-        if (this.props.item.id !== undefined) {
+        if (this.props.item._id !== undefined) {
             this.props.cancelJoining(this.props.item);
         }
     } 
 
     removeItem(event: React.FormEvent<HTMLButtonElement>) {
-        console.log('removing itemId ', this.props.item.id);
-        if (this.props.item.id !== undefined) {
-            this.props.deleteItem(this.props.item.id);
+        console.log('removing itemId ', this.props.item._id);
+        if (this.props.item._id !== undefined) {
+            this.props.deleteItem(this.props.item._id);
         }
     }
 

@@ -1,4 +1,5 @@
 export  default class Item {
+    _id: string;
     id?: number;
     attuid: string;
     price: string;

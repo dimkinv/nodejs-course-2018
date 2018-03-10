@@ -21,7 +21,7 @@ class App extends React.Component<AppProps> {
         this.props.cancelJoining(item);
     }
 
-    deleteItem(itemId: number) {
+    deleteItem(itemId: string) {
         this.props.deleteItem(itemId);
     }
 

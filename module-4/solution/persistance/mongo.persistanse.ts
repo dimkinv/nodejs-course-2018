@@ -1,6 +1,7 @@
 import { PersistanceInterface, ItemId } from "./persistance.interface";
 import { MongoDBClient } from "./database/mongo-client";
 import Item from "../../../models/Item";
+import { ObjectID } from "bson";
 
 const COLLECTION_NAME = 'example_items';
 
@@ -29,7 +30,7 @@ export class MongoPersistance implements PersistanceInterface {
     async getItemById(itemId: ItemId): Promise<Item> {
         try {
             const db = await this.mongoclient.getDbConnection();
-            return await db.collection(COLLECTION_NAME).findOne<Item>({ _id: itemId });
+            return await db.collection(COLLECTION_NAME).findOne<Item>({ _id: new ObjectID(itemId) });
         } catch (error) {
             console.log(`error finding item in db ${error}`);
             throw error;
@@ -51,7 +52,7 @@ export class MongoPersistance implements PersistanceInterface {
     async updateItem(itemId: ItemId, item: Item): Promise<void> {
         try {
             const db = await this.mongoclient.getDbConnection();
-            const result = await db.collection(COLLECTION_NAME).findOneAndUpdate({ id: itemId }, item);
+            const result = await db.collection(COLLECTION_NAME).findOneAndUpdate({ _id: new ObjectID(itemId) }, item);
         } catch (error) {
             console.log(`error updating item in db ${error}`);
             throw error;            

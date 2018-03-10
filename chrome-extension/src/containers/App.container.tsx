@@ -68,7 +68,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             .then(this.addItemToState);
     }
 
-    deleteItem(itemId: number) {
+    deleteItem(itemId: string) {
         console.log('deleting...', itemId);
         fetch(`${baseUrl}/${itemId}`, { headers, method: 'DELETE' })
             .then((res) => this.handleHTTPErrors(res))
@@ -83,7 +83,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         }
         const buyers = item.buyers.concat(this.state.username);
         const updateItem = { ...item, buyers };
-        fetch(`${baseUrl}/${item.id}`, { method: 'PUT', headers })
+        fetch(`${baseUrl}/${item._id}`, { method: 'PUT', headers })
             .then((res) => this.handleHTTPErrors(res))
             .then(res => {
                 this.updateItemInState(updateItem);
@@ -96,7 +96,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         }
         const buyers = item.buyers.filter(buyer => buyer !== this.state.username);
         const updateItem = { ...item, buyers };
-        fetch(`${baseUrl}/${item.id}`, { method: 'DELETE', headers })
+        fetch(`${baseUrl}/${item._id}`, { method: 'DELETE', headers })
             .then((res) => this.handleHTTPErrors(res))
             .then(res => {
                 this.updateItemInState(updateItem);
@@ -195,8 +195,8 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             this.addItemToState(item);
         });
         this.state.socket.on('delete-item', (item: Item) => {
-            if (item.id) {
-                this.deleteItemFromState(item.id);
+            if (item._id) {
+                this.deleteItemFromState(item._id);
             }
         });
         this.state.socket.on('update-item', (item: Item) => {
@@ -216,11 +216,11 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             });
     }
 
-    private deleteItemFromState(itemId: number) {
+    private deleteItemFromState(itemId: string) {
         this.setState(
             (prevState) => ({
                 err: '',
-                items: prevState.items.filter(item => item.id !== itemId),
+                items: prevState.items.filter(item => item._id !== itemId),
                 loading: false,
             }),
             () => {
@@ -234,7 +234,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             (prevState) => ({
                 err: '',
                 items: prevState.items.map(oldItem => {
-                    if (oldItem.id === updateItem.id) {
+                    if (oldItem._id === updateItem._id) {
                         return updateItem;
                     }
                     return oldItem;
