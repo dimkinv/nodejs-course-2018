@@ -28,7 +28,7 @@ export class ItemsController {
             const item = req.body as Item;
             item.id = currentId++;
             const itemAfterInsert = await this.persistance.insertItem(item);
-
+            console.log(itemAfterInsert);
             res.send(itemAfterInsert);
         } catch (error) {
             res.status(500).json(error);

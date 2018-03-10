@@ -42,7 +42,7 @@ class App extends React.Component<AppProps> {
                 <tbody>
                 {this.props.items.map(item => (
                     <TableRow 
-                        key={item.id} 
+                        key={item.id || item._id} 
                         item={item} 
                         joinShopping={this.joinShopping} 
                         cancelJoining={this.cancelJoining}

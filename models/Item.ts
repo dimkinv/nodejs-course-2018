@@ -1,4 +1,7 @@
+import { ItemId } from "../module-4/solution/persistance/persistance.interface";
+
 export  default class Item {
+    _id: ItemId;
     id?: number;
     attuid: string;
     price: string;

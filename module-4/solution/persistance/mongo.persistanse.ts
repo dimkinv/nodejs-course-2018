@@ -29,7 +29,7 @@ export class MongoPersistance implements PersistanceInterface {
     async getItemById(itemId: ItemId): Promise<Item> {
         try {
             const db = await this.mongoclient.getDbConnection();
-            return await db.collection(COLLECTION_NAME).findOne<Item>({ id: itemId });
+            return await db.collection(COLLECTION_NAME).findOne<Item>({ _id: itemId });
         } catch (error) {
             console.log(`error finding item in db ${error}`);
             throw error;
@@ -40,6 +40,7 @@ export class MongoPersistance implements PersistanceInterface {
         try {
             const db = await this.mongoclient.getDbConnection();
             const insertResult = await db.collection(COLLECTION_NAME).insertOne(item);
+            console.log(insertResult.insertedId);
             return await this.getItemById(insertResult.insertedId);
         } catch (error) {
             console.log(`error inserting item to db ${error}`);
