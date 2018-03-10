@@ -1,7 +1,7 @@
 import { PersistanceInterface, ItemId } from "./persistance.interface";
 import { MongoDBClient } from "./database/mongo-client";
 import Item from "../../../models/Item";
-import { ObjectID } from "bson";
+import { ObjectID } from "mongodb";
 
 const COLLECTION_NAME = 'example_items';
 
