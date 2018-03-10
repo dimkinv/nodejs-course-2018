@@ -1,23 +1,22 @@
 import { MongoClient, Db } from "mongodb"
 
-class MongoDBClient {
-    private uri = "mongodb://localhost:27017";
-    private dbName = "items";
-    public collectionName = "items";
-    public db: Db;
-    public async connect():Promise<Db> {
-        return new Promise<Db>((resolve, reject) => {
-            MongoClient.connect(this.uri)
-            .then((connection) => {
-                this.db = connection.db(this.dbName);
-                resolve(this.db);
-            })
-            .catch((error) => {
-                reject(error)
-            });
-        });
+const CONNECTION_STRING = 'mongodb://nodejs_user:Aa123456@ds161148.mlab.com:61148/nodejs-course-2018';
+const DB_NAME = 'nodejs-course-2018';
+
+export class MongoDBClient {
+    private db: Db;
+    public async getDbConnection(): Promise<Db> {
+        if (this.db) {
+            return this.db;
+        }
+
+        try {
+            const connection = await MongoClient.connect(CONNECTION_STRING);
+            this.db = connection.db(DB_NAME);
+            return this.db;
+        } catch (error) {
+            console.log(`error connecting to DB ${error}`);
+            throw error;
+        }
     }
 }
-
-const client = new MongoDBClient();
-export default client;

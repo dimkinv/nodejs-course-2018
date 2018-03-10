@@ -1,67 +1,59 @@
-import { PersistanceInterface } from "./persistance.interface";
-import MongoDBClient from "./database/mongo-client";
-
+import { PersistanceInterface, ItemId } from "./persistance.interface";
+import { MongoDBClient } from "./database/mongo-client";
 import Item from "../../../models/Item";
 
+const COLLECTION_NAME = 'example_items';
 
 export class MongoPersistance implements PersistanceInterface {
-    async deleteItem(itemId: number): Promise<void> {
-        let db = await MongoDBClient.connect();
-        let result = await db.collection(MongoDBClient.collectionName).deleteOne({ id: itemId});
-
-        return new Promise<void>((resolve, reject) => {
-            if(!result) {
-                reject("Error deleting item");
-            }
-            resolve();
-        });
+    private mongoclient = new MongoDBClient();
+    async deleteItem(itemId: ItemId): Promise<void> {
+        try {
+            const db = await this.mongoclient.getDbConnection();
+            const delResult = await db.collection(COLLECTION_NAME).deleteOne({ id: itemId });
+        } catch (error) {
+            console.log(`error removing item from db ${error}`);
+            throw error;
+        }
     }
 
     async getItems(): Promise<Item[]> {
-        let db = await MongoDBClient.connect();
-        let result = await db.collection(MongoDBClient.collectionName).find<Item>({});
-
-        return new Promise<Item[]>((resolve, reject) => {
-            if(!result) {
-                reject("Error finding items");
-            }
-            resolve(result.toArray());
-        });
+        try {
+            const db = await this.mongoclient.getDbConnection();
+            return await db.collection(COLLECTION_NAME).find<Item>({}).toArray();
+        } catch (error) {
+            console.log(`error finding items in db ${error}`);
+            throw error;
+        }
     }
 
-    async getItemById(itemId: number): Promise<Item> {
-        let db = await MongoDBClient.connect();
-        let result = await db.collection(MongoDBClient.collectionName).findOne<Item>({ id: itemId });
-
-        return new Promise<Item>((resolve, reject) => {
-            if(!result) {
-                reject("Error creating item in mongo");
-            }
-            resolve(result);
-        });
+    async getItemById(itemId: ItemId): Promise<Item> {
+        try {
+            const db = await this.mongoclient.getDbConnection();
+            return await db.collection(COLLECTION_NAME).findOne<Item>({ id: itemId });
+        } catch (error) {
+            console.log(`error finding item in db ${error}`);
+            throw error;
+        }
     }
 
     async insertItem(item: Item): Promise<Item> {
-        let db = await MongoDBClient.connect();
-        let result = db.collection(MongoDBClient.collectionName).insertOne(item);
-
-        return new Promise<Item>((resolve, reject) => {
-            if(!result) {
-                reject("Error creating item in mongo");
-            }
-            resolve(item);
-        });
+        try {
+            const db = await this.mongoclient.getDbConnection();
+            const insertResult = await db.collection(COLLECTION_NAME).insertOne(item);
+            return await this.getItemById(insertResult.insertedId);
+        } catch (error) {
+            console.log(`error inserting item to db ${error}`);
+            throw error;
+        }
     }
 
-    async updateItem(itemId: number, item: Item): Promise<void> {
-        let db = await MongoDBClient.connect();
-        let result = await db.collection(MongoDBClient.collectionName).findOneAndUpdate({ id: itemId }, item);
-
-        return new Promise<void>((resolve, reject) => {
-            if(!result) {
-                reject("Error creating item in mongo");
-            }
-            resolve();
-        });
+    async updateItem(itemId: ItemId, item: Item): Promise<void> {
+        try {
+            const db = await this.mongoclient.getDbConnection();
+            const result = await db.collection(COLLECTION_NAME).findOneAndUpdate({ id: itemId }, item);
+        } catch (error) {
+            console.log(`error updating item in db ${error}`);
+            throw error;            
+        }
     }
 }

@@ -1,4 +1,3 @@
-# Group Shopping Application
 # Modules
 
 ## Modules 1
@@ -34,6 +33,7 @@
 ## Module 7
 [Presentation](http://dimkinv.github.io/nodejs-course-2018/module-7)
 - Publish app with pm2
+
 
 # Client
 ## Requirements 

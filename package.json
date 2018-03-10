@@ -30,7 +30,7 @@
     "typescript": "^2.7.2"
   },
   "scripts": {
-    "start": "http-server & tsc -w",
+    "start": "concurrently \"http-server\" \"tsc -w\"",
     "tsc": "tsc -w"
   }
 }

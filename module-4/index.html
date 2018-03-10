@@ -13,221 +13,128 @@
 </head>
 
 <body>
-<div class="att_logo"></div>
-<div class="reveal">
-    <div class="slides">
-        <section>
-            <h1>Persistence</h1>
-            <sub>By Nabil Naffar & Danny Vernovsky & Almog Laktivi</sub>
-        </section>
-        <section>
-            <h2>In This Module</h2>
-            <p>MongoDB</p>
-            <p>MySQL</p>
-        </section>
-        <section>
-            <h2>MongoDB introduction</h2>
-            <ul>
-                <li>Most common NOSQL database</li>
-                <li>Document database - collections which stores documents</li>
-                <li>Drivers to most popular programing language (including NodeJS)</li>
-                <li>Installation and very well-documented documentation can be found <a src="https://docs.mongodb.com/">here</a></li>
-            </ul>
-        </section>
-        <section>
+    <div class="att_logo"></div>
+    <div class="reveal">
+        <div class="slides">
             <section>
-                <h2>MongoDB CRUD via NodeJS</h2>
+                <h1>Persistence</h1>
+                <sub>By Nabil Naffar & Danny Vernovsky & Almog Laktivi</sub>
+            </section>
+            <section>
+                <h2>In This Module</h2>
+                <p>MongoDB</p>
+                <p>MySQL</p>
+            </section>
+            <section>
+                <h2>MongoDB introduction</h2>
                 <ul>
-                    <li>Create</li>
-                    <li>Read</li>
-                    <li>Update</li>
-                    <li>Delete</li>
+                    <li>Most common NOSQL database</li>
+                    <li>Document database - collections which stores documents</li>
+                    <li>Drivers to most popular programing language (including NodeJS)</li>
+                    <li>Installation and very well-documented documentation can be found
+                        <a src="https://docs.mongodb.com/">here</a>
+                    </li>
                 </ul>
             </section>
             <section>
-                Connect to MongoDB
-                <pre>
+                <section>
+                    <h2>MongoDB CRUD via NodeJS</h2>
+                    <p>Some notable commands</p>
+                    <ul>
+                        <li>collection.find</li>
+                        <li>collection.findOne</li>
+                        <li>collection.insertOne</li>
+                        <li>collection.insertMany</li>
+                        <li>collection.update</li>
+                        <li>collection.updateMany</li>
+                        <li>collection.deleteOne</li>
+                        <li>collection.deleteMany</li>
+                    </ul>
+                </section>
+                <section>
+                    Connect to MongoDB
+                    <pre>
                     <code data-trim data-noescape class="ts">
                         import { MongoClient, Db } from "mongodb"
-                        class MongoDBClient {
-                            private uri = "mongodb://localhost:27017";
-                            private dbName = "test";
-                            public collectionName = "test";
-                            public db: Db;
-                            public async connect():Promise< Db> {
-                                return new Promise< Db>((resolve, reject) => {
-                                    MongoClient.connect(this.uri)
-                                    .then((connection) => {
-                                        this.db = connection.db(this.dbName);
-                                        resolve(this.db);
-                                    }).catch((error) => {
-                                        reject(error)
-                                    });
-                                });
+                        try {
+                            const connection = await MongoClient.connect(this.uri)
+                            const db = connection.db('ExampleDB');
+                        } catch (error){
+                            //handle error
+                            throw error;
+                        }
+                    </code>
+                </pre>
+                </section>
+                <section>
+                    Insert
+                    <pre class="wide">
+                        <code data-trim data-noescape class="ts">
+                            class Persistence {
+                                private db: Db;
+                                public async insert(doc: SomeDocType):number {
+                                    try {
+                                        const someCollection = this.db.collection('SomeCollection');
+                                        const res = await someCollection.insertOne(doc);
+                                        console.log(`inserted ${res.insertedCount} documents`);
+                                        return res.insertedCount;
+                                    } catch (error){
+                                        //handle error
+                                        throw error;
+                                    }
+                                }
                             }
-                        }
-                        const client = new MongoDBClient();
-                        export default client;
-                    </code>
-                    database-client.ts
-                </pre>
-            </section>
-            <section>
-                Create
-                <pre>
-                    <code data-trim data-noescape class="ts">
-                        import DBClient from "./database-client";
-
-                        class App {
-                        public async start() {
-                            let db = await DBClient.connect();
-
-                            let result =
-                                await db.collection("products").insertOne({
-                                topic: "camera", cost: 10
-                            });
-
-                            return new Promise< Object>((resolve, reject) => {
-                                if(!result) {
-                                    reject("Error creating object in mongo");
+                        </code>
+                    </pre>
+                    <small> Use 'insertMany' method to insert several documents.</small>
+                </section>
+                <section>
+                    Find
+                    <pre class="wide">
+                        <code data-trim data-noescape class="ts">
+                            class App {
+                                private db: Db;
+                                public async findAllDocuments(): SomeDocType[] {
+                                    try{
+                                    const someCollection = this.db.collection('SomeCollection');
+                                    return await someCollection.find({name:'Danny'}).toArray();
+                                    } catch (error){
+                                        //handle error
+                                        throw error;
+                                    }
                                 }
-                                resolve(result);
-                            });
-                        }
-                    }
-                    </code>
-                    You can also use 'insertMany' method to insert several documents.
-                </pre>
+                            }
+                        </code>
+                    </pre>
+                    <small>Use 'findOne' to return single docuemnt form collection</small>
+                </section>
             </section>
             <section>
-                Read
-                <pre>
-                    <code data-trim data-noescape class="ts">
-                        import DBClient from "./database-client";
-
-                        class App {
-                        public async start() {
-                            let db = await DBClient.connect();
-                            let products = await db.collection("products")
-                                                                .find().toArray();
-
-                            return new Promise< Object>((resolve, reject) => {
-                                if(!products) {
-                                    reject("Error reading object in mongo");
-                                }
-                                resolve(products);
-                            });
-                        }
-                    }
-                    </code>
-                    You can also use 'findOne' method and declare filter
-                </pre>
+                <img src="../assets/demotime.png" alt="">
             </section>
             <section>
-                Update
-                <pre>
-                    <code data-trim data-noescape class="ts">
-                        import DBClient from "./database-client";
-
-                        class App {
-                        public async start() {
-                            let db = await DBClient.connect();
-                            let result = db.collection("products").updateOne(
-                                                    {topic: "camera"}, {cost: 12});
-
-                            return new Promise< Object>((resolve, reject) => {
-                                if(!result) {
-                                    reject("Error updating object in mongo");
-                                }
-                                resolve(result);
-                            });
-                        }
-                    }
-                    </code>
-                    You can also use 'updateMany' method to update several documents.
-                </pre>
-            </section>
-            <section>
-                Delete
-                <pre>
-                    <code data-trim data-noescape class="ts">
-                        import DBClient from "./database-client";
-
-                        class App {
-                        public async start() {
-                            let db = await DBClient.connect();
-                            let result = db.collection("products").deleteOne({progress: 10});
-
-
-                            return new Promise< Object>((resolve, reject) => {
-                                if(!result) {
-                                    reject("Error deleting object in mongo");
-                                }
-                                resolve(result);
-                            });
-                        }
-                    }
-                    </code>
-                    You can also use 'deleteMany' method to delete several documents.
-                </pre>
-            </section>
-        </section>
-        <section>
-            <img src="../assets/demotime.png" alt="">
-        </section>
-        <section>
-            <table>
-                <tr>
-                    <td style="width:50%">
-                        <img src="../assets/exercise-time.png"/>
-                    </td>
-                    <td style="vertical-align: top; font-size:16px">
-                        <ul style="list-style-type: none">
-                            <li><h4>Create MongoDB database for extension items</h4>
-                                <ul>
-                                    <li>Move persistence layer to mongoDB CRUD</li>
-                                    <li>Create new collection for items. Name it 'items'</li>
-                                    <li>Create database client which will serve your controller</li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <ul style="list-style-type: none">
-                            <li><h4>notes</h4></li>
-                            <ul>
-                                <li>Remove fs.persistanse.ts file</li>
-                                <li>You can use MongoDB shell to create, read, delete and update databases/collections/documents</li>
-                            </ul>
-                        </ul>
-                    </td>
-                </tr>
-            </table>
-        </section>
-        <section>
-            <h2>MySQL introduction</h2>
-            <ul>
-                <li>Common RDBMS database</li>
-                <li>Uses SQL language</li>
-                <li>Have the ability to work with both small and large data sets</li>
-                <li>Drivers to most popular programing languages (including NodeJS)</li>
-            </ul>
-        </section>
-        <section>
-            <section>
-                <h2>MySQL CRUD via NodeJS</h2>
+                <h2>MySQL introduction</h2>
                 <ul>
-                    <li>Create</li>
-                    <li>Read</li>
-                    <li>Update</li>
-                    <li>Delete</li>
-                    <li>Events</li>
+                    <li>Common RDBMS database</li>
+                    <li>Uses SQL language</li>
+                    <li>Have the ability to work with both small and large data sets</li>
+                    <li>Drivers to most popular programing languages (including NodeJS)</li>
                 </ul>
             </section>
             <section>
-                Connect to MySQL
-                <pre>
+                <section>
+                    <h2>MySQL CRUD via NodeJS</h2>
+                    <ul>
+                        <li>Create</li>
+                        <li>Read</li>
+                        <li>Update</li>
+                        <li>Delete</li>
+                        <li>Events</li>
+                    </ul>
+                </section>
+                <section>
+                    Connect to MySQL
+                    <pre>
                     npm install --save mysql
                     npm install --save @types/mysql
                     <code data-trim data-noescape class="ts">
@@ -247,10 +154,10 @@
                         export = new DBClient();
                     </code>
                 </pre>
-            </section>
-            <section>
-                Create
-                <pre>
+                </section>
+                <section>
+                    Create
+                    <pre>
                     <code data-trim data-noescape class="ts">
                         import {format} from 'mysql';
                         import DBClient = require("./database-client");
@@ -275,10 +182,10 @@
                     }
                     </code>
                 </pre>
-            </section>
-            <section>
-                Read
-                <pre>
+                </section>
+                <section>
+                    Read
+                    <pre>
                     <code data-trim data-noescape class="ts">
                         import DBClient = require("./database-client");
 
@@ -297,10 +204,10 @@
                     }
                     </code>
                 </pre>
-            </section>
-            <section>
-                Update
-                <pre>
+                </section>
+                <section>
+                    Update
+                    <pre>
                     <code data-trim data-noescape class="ts">
                         import DBClient = require("./database-client");
 
@@ -319,10 +226,10 @@
                     }
                     </code>
                 </pre>
-            </section>
-            <section>
-                Delete
-                <pre>
+                </section>
+                <section>
+                    Delete
+                    <pre>
                     <code data-trim data-noescape class="ts">
                         import DBClient = require("./database-client");
 
@@ -343,10 +250,10 @@
                     }
                     </code>
                 </pre>
-            </section>
-            <section>
-                Events (result, error, fields, packet, end)
-                <pre>
+                </section>
+                <section>
+                    Events (result, error, fields, packet, end)
+                    <pre>
                     <code data-trim data-noescape class="ts">
                         import DBClient = require("./database-client");
 
@@ -365,21 +272,58 @@
                     }
                     </code>
                 </pre>
+                </section>
             </section>
-        </section>
+            <section>
+                <table>
+                    <tr>
+                        <td style="width:50%">
+                            <img src="../assets/exercise-time.png" />
+                        </td>
+                        <td style="vertical-align: top; font-size:16px">
+                            <ul style="list-style-type: none">
+                                <li>
+                                    <h4>Create MongoDB database for extension items</h4>
+                                    <ul>
+                                        <li>
+                                            Use the following string to connect to db<br/>
+                                            <code>mongodb://nodejs_user:Aa123456@ds161148.mlab.com:61148/nodejs-course-2018</code>
+                                        </li>
+                                        <li>Move persistence layer to mongoDB CRUD</li>
+                                        <li>Create new collection for items. Name it '[yourattuid]_items'</li>
+                                        <li>Create database client which will serve your controller</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <br/>
+                            <br/>
+                            <ul style="list-style-type: none">
+                                <li>
+                                    <h4>notes</h4>
+                                </li>
+                                <ul>
+                                    <li>Remove fs.persistanse.ts file</li>
+                                    <li>You can use MongoDB shell to create, read, delete and update databases/collections/documents</li>
+                                </ul>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </section>
+        </div>
     </div>
-</div>
-<script src="../assets/lib/js/head.min.js"></script>
-<script src="../assets/js/reveal.js"></script>
-<script>
-    Reveal.initialize({
-        history: true,
-        dependencies: [
-            { src: '../assets/plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
-            { src: '../assets/plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
-            { src: '../assets/plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
-        ]
-    });
-</script>
+    <script src="../assets/lib/js/head.min.js"></script>
+    <script src="../assets/js/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            history: true,
+            dependencies: [
+                { src: '../assets/plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: '../assets/plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: '../assets/plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+            ]
+        });
+    </script>
 </body>
+
 </html>
