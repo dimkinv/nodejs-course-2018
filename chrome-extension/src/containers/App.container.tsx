@@ -11,6 +11,16 @@ const CACHE_KEY = 'NODEJS_COURSE_GROUP_SHOPPING_ITEMS';
 const USERNAME = 'NODEJS_COURSE_GROUP_SHOPPING_NAME';
 const X_AUTH = 'X-AUTH';
 const headers = new Headers({ 'Content-Type': 'application/json' });
+enum SOCKET_EVENTS {
+    ADD_ITEM= 'add-item',
+    UPDATE_ITEM= 'update-item', 
+    DELETE_ITEM= 'delete-item',
+}
+interface Message {
+    username: string;
+    action: SOCKET_EVENTS;
+    message: Item | string;
+}
 
 /* tslint:disable */
 
@@ -24,6 +34,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         this.onLogin = this.onLogin.bind(this);
         this.onLogout = this.onLogout.bind(this);
         this.cancelJoining = this.cancelJoining.bind(this);
+        this.updateWebsocket = this.updateWebsocket.bind(this);
 
         // socket.io
         this.openSocketConnection = this.openSocketConnection.bind(this);
@@ -131,7 +142,8 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             webSocket: false
         }, (items) => {
             this.setState({ webSocket: items.webSocket }, () => {
-                if (items.websocket) {
+                if (this.state.webSocket) {
+                    console.log('connecting...');
                     this.openSocketConnection();
                 }
             });
@@ -186,21 +198,25 @@ class AppContainer extends React.Component<{}, AppContainerState> {
     }
 
     private openSocketConnection() {
+        console.log('opening socket..');
         const socket = openSocket('http://localhost:3000');
         this.setState({ socket }, this.handleSocketEvents);
     }
 
     private handleSocketEvents() {
-        this.state.socket.on('add-item', (item: Item) => {
-            this.addItemToState(item);
-        });
-        this.state.socket.on('delete-item', (item: Item) => {
-            if (item._id) {
-                this.deleteItemFromState(item._id);
-            }
-        });
-        this.state.socket.on('update-item', (item: Item) => {
-            this.updateItemInState(item);
+        this.state.socket.on('message', (payload: Message) => {
+            console.log(`${payload.action} change from ${payload.username} : `, payload.message);
+            switch(payload.action) {
+                case SOCKET_EVENTS.ADD_ITEM:
+                    this.addItemToState(payload.message as Item);
+                    break;
+                case SOCKET_EVENTS.UPDATE_ITEM:
+                    this.updateItemInState(payload.message as Item);
+                    break;
+                case SOCKET_EVENTS.DELETE_ITEM:
+                    this.deleteItemFromState(payload.message as string);
+                    break;
+            } 
         });
     }
 
@@ -213,6 +229,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             })),
             () => {
                 this.updateItemsCache(this.state.items);
+                this.updateWebsocket(SOCKET_EVENTS.ADD_ITEM, createdItem);
             });
     }
 
@@ -225,6 +242,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             }),
             () => {
                 this.updateItemsCache(this.state.items);
+                this.updateWebsocket(SOCKET_EVENTS.DELETE_ITEM, itemId);
             });
 
     }
@@ -243,7 +261,19 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             }),
             () => {
                 this.updateItemsCache(this.state.items);
+                this.updateWebsocket(SOCKET_EVENTS.UPDATE_ITEM, updateItem);
             });
+    }
+
+    private updateWebsocket(action: SOCKET_EVENTS, message: Item | string) {
+        if(this.state.socket) {
+            const payload: Message = {
+                action,
+                message,
+                username: this.state.username,
+            };
+            this.state.socket.emit('message', payload);
+        }
     }
 
     private updateItemsCache(items: Item[]) {
