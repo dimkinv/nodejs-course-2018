@@ -57,6 +57,42 @@
                 </ul>
             </section>
             <section>
+                <h2>Initiating socket.io</h2>
+                Client
+                <pre>
+                    <code data-trim data-noescape>
+                        &lt;script src="/socket.io/socket.io.js"&gt;&lt;/script&gt;
+                    </code>
+                </pre> Server
+                <pre>
+                    <code data-trim data-noescape>
+                        import * as socket from 'socket.io';
+                        import { Server } from 'http';
+                        import * as express from 'express';
+
+                        const app = express();
+                        const http = new Server(app);
+                        const io = socket(http);
+                    </code>
+                </pre>
+            </section>
+            <section>
+                <h2>Using socket.io</h2>
+                It's all about
+                <a href="/module-3/#/4">events!!!</a>
+                <pre>
+                    <code data-trim data-noescape>
+                        io.on('connection', function (socket) {
+                            socket.emit('news', { hello: 'world' });
+                            socket.on('my other event', function (data) {
+                            console.log(data);
+                            });
+                            socket.broadcast.emit({message: 'send to all except me'});
+                        });
+                    </code>
+                </pre>
+            </section>
+            <section>
                 <h2>Demo</h2>
             </section>
             <section>
@@ -91,6 +127,43 @@
                                     .pipe(finalWritableDest)
                             </code>
                         </pre>
+            </section>
+            <section>
+                <table>
+                    <tr>
+                        <td style="width:50%">
+                            <img src="../assets/exercise-time.png" />
+                        </td>
+                        <td style="vertical-align: top; font-size:16px">
+                            <ul style="list-style-type: none">
+                                <li>
+                                    <h4>Create MongoDB database for extension items</h4>
+                                    <ul>
+                                        <li>
+                                            Use the following string to connect to db
+                                            <br/>
+                                            <code>mongodb://nodejs_user:Aa123456@ds161148.mlab.com:61148/nodejs-course-2018</code>
+                                        </li>
+                                        <li>Move persistence layer to mongoDB CRUD</li>
+                                        <li>Create new collection for items. Name it '[yourattuid]_items'</li>
+                                        <li>Create database client which will serve your controller</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <br/>
+                            <br/>
+                            <ul style="list-style-type: none">
+                                <li>
+                                    <h4>notes</h4>
+                                </li>
+                                <ul>
+                                    <li>Remove fs.persistanse.ts file</li>
+                                    <li>You can use MongoDB shell to create, read, delete and update databases/collections/documents</li>
+                                </ul>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
             </section>
         </div>
     </div>
