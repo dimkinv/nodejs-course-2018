@@ -6,7 +6,8 @@ import Item from '../models/Item';
 import { getItemFromPage } from '../crawler';
 import Login from '../components/Login';
 
-const baseUrl = 'http://localhost:3000/api/items';
+let webSocketUrl = 'http://localhost:3000';
+let baseUrl = 'http://localhost:3000/api/items';
 const CACHE_KEY = 'NODEJS_COURSE_GROUP_SHOPPING_ITEMS';
 const USERNAME = 'NODEJS_COURSE_GROUP_SHOPPING_NAME';
 const X_AUTH = 'X-AUTH';
@@ -35,6 +36,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         this.onLogout = this.onLogout.bind(this);
         this.cancelJoining = this.cancelJoining.bind(this);
         this.updateWebsocket = this.updateWebsocket.bind(this);
+        this.init = this.init.bind(this);
 
         // socket.io
         this.openSocketConnection = this.openSocketConnection.bind(this);
@@ -139,16 +141,23 @@ class AppContainer extends React.Component<{}, AppContainerState> {
     componentDidMount() {
         // Get websocket options
         chrome.storage.sync.get({
-            webSocket: false
+            webSocket: false,
+            url: 'http://localhost:3000',
+            items: '/api/items'
         }, (items) => {
+            baseUrl = items.url + items.items;
+            webSocketUrl = items.url;
             this.setState({ webSocket: items.webSocket }, () => {
                 if (this.state.webSocket) {
                     console.log('connecting...');
                     this.openSocketConnection();
+                    this.init();
                 }
             });
         });
+    }
 
+    init() {
         // Check if user logged in
         const username = window.localStorage.getItem(USERNAME);
         if (!username) {
@@ -199,7 +208,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
 
     private openSocketConnection() {
         console.log('opening socket..');
-        const socket = openSocket('http://localhost:3000');
+        const socket = openSocket(webSocketUrl);
         this.setState({ socket }, this.handleSocketEvents);
     }
 
