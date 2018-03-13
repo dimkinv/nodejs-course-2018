@@ -35,7 +35,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
         this.onLogin = this.onLogin.bind(this);
         this.onLogout = this.onLogout.bind(this);
         this.cancelJoining = this.cancelJoining.bind(this);
-        this.updateWebsocket = this.updateWebsocket.bind(this);
+        // this.updateWebsocket = this.updateWebsocket.bind(this);
         this.init = this.init.bind(this);
 
         // socket.io
@@ -213,6 +213,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
     }
 
     private handleSocketEvents() {
+        this.state.socket.emit('register', this.state.username);
         this.state.socket.on('message', (payload: Message) => {
             console.log(`${payload.action} change from ${payload.username} : `, payload.message);
             switch(payload.action) {
@@ -238,7 +239,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             })),
             () => {
                 this.updateItemsCache(this.state.items);
-                this.updateWebsocket(SOCKET_EVENTS.ADD_ITEM, createdItem);
+                // this.updateWebsocket(SOCKET_EVENTS.ADD_ITEM, createdItem);
             });
     }
 
@@ -251,7 +252,7 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             }),
             () => {
                 this.updateItemsCache(this.state.items);
-                this.updateWebsocket(SOCKET_EVENTS.DELETE_ITEM, itemId);
+                // this.updateWebsocket(SOCKET_EVENTS.DELETE_ITEM, itemId);
             });
 
     }
@@ -270,20 +271,20 @@ class AppContainer extends React.Component<{}, AppContainerState> {
             }),
             () => {
                 this.updateItemsCache(this.state.items);
-                this.updateWebsocket(SOCKET_EVENTS.UPDATE_ITEM, updateItem);
+                // this.updateWebsocket(SOCKET_EVENTS.UPDATE_ITEM, updateItem);
             });
     }
 
-    private updateWebsocket(action: SOCKET_EVENTS, message: Item | string) {
-        if(this.state.socket) {
-            const payload: Message = {
-                action,
-                message,
-                username: this.state.username,
-            };
-            this.state.socket.emit('message', payload);
-        }
-    }
+    // private updateWebsocket(action: SOCKET_EVENTS, message: Item | string) {
+    //     if(this.state.socket) {
+    //         const payload: Message = {
+    //             action,
+    //             message,
+    //             username: this.state.username,
+    //         };
+    //         this.state.socket.emit('message', payload);
+    //     }
+    // }
 
     private updateItemsCache(items: Item[]) {
         window.localStorage.setItem(CACHE_KEY, JSON.stringify(items));

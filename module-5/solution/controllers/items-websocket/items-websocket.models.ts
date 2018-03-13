@@ -6,8 +6,9 @@ export enum SOCKET_EVENTS {
     DELETE_ITEM = 'delete-item',
 }
 
-export interface Message {
-    username: string;
-    action: SOCKET_EVENTS;
-    message: Item | string;
+export class Message {
+    constructor(
+        public action: SOCKET_EVENTS,
+        public username: string,
+        public message: Item | string, ){}
 }

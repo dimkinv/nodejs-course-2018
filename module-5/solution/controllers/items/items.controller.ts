@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import Item from '../../../../models/Item';
 import { PersistanceInterface } from '../../persistance/persistance.interface';
+import { ItemsWebsocketController } from '../items-websocket/items-websocket.controller';
 
 const AUTH_HEADER = 'x-auth';
 
 export class ItemsController {
-    constructor(private persistance: PersistanceInterface) {
+    constructor(private persistance: PersistanceInterface, private itemsWebsocketController: ItemsWebsocketController) {
         this.get = this.get.bind(this);
         this.put = this.put.bind(this);
         this.post = this.post.bind(this);
@@ -23,9 +24,11 @@ export class ItemsController {
     }
 
     async post(req: Request, res: Response) {
+        const user: string = req.headers[AUTH_HEADER] as string;
         try {
             const item = req.body as Item;
             const itemAfterInsert = await this.persistance.insertItem(item);
+            this.itemsWebsocketController.broadcastAddedItem(user, item);
             console.log(itemAfterInsert);
             res.send(itemAfterInsert);
         } catch (error) {
@@ -57,6 +60,7 @@ export class ItemsController {
 
             item.buyers = item.buyers.concat(user);
             await this.persistance.updateItem(item.id, item);
+            this.itemsWebsocketController.broadcastUpdatedItem(user, item);
             res.json(item);
         } catch (error) {
             res.status(500).json(error);
@@ -64,7 +68,7 @@ export class ItemsController {
     }
 
     async delete(req: Request, res: Response) {
-        const id = +req.params.id as number;
+        const id = req.params.id;
         const user = req.headers[AUTH_HEADER] as string;
         const item = await this.persistance.getItemById(id);
 
@@ -88,6 +92,7 @@ export class ItemsController {
         // cancel joining
         item.buyers = item.buyers.filter(buyer => buyer !== user);
         await this.persistance.updateItem(item.id, item);
+        this.itemsWebsocketController.broadcastDeletedItem(user, id);
         res.sendStatus(204);
     }
 }
