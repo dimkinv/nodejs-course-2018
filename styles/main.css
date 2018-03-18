@@ -7,7 +7,7 @@
     left: 45px;
 }
 
-.what-will-you-know{
+.what-will-you-know {
     background-size: contain;
     width: 310px;
     height: 475px;
@@ -15,15 +15,19 @@
     position: absolute;
 }
 
-
-pre{
+pre {
     box-shadow: none !important;
 }
 
-pre.wide{
-    width:100%;
+pre.wide {
+    width: 100%;
 }
 
-code{
+code {
     max-height: none !important;
+}
+
+code.inline {
+    background: #eee;
+    padding: 0px 4px 2px 3px;
 }

@@ -4,3 +4,6 @@ module*/**/*.js
 yarn-error.log
 ~$*
 logfile.txt
+*.js.map
+.nyc_output
+coverage

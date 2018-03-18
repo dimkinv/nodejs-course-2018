@@ -20,3 +20,4 @@ function requestLog(req, res, next) {
     console.log(`${req.method}  ${req.hostname}${req.url} for user: ${req.header('x-auth')}`);
     next();
 }
+//# sourceMappingURL=app.middleware.js.map
