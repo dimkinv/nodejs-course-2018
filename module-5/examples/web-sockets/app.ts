@@ -6,13 +6,22 @@ const app = express();
 const http = new Server(app);
 const io = socket(http);
 
+const users = new Map<string, SocketIO.Socket>();
 app.get('/', (req: express.Request, res: express.Response) => {
     res.sendFile(__dirname + '/client/index.html');
 });
 
 io.on('connection', (socket) => {
     console.log('a user connected');
-    
+
+    socket.on('register', (data: { username: string }) => {
+        console.log(data);
+        users.set(data.username, socket);
+
+        console.log(`users connected: ${users.keys()}`);
+
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });

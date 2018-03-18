@@ -11,10 +11,10 @@ async function foo() {
 
     const insertResponse = await db.collection('people').insertOne(new Director({
         name: 'Shomi',
-        bribes: 0
+        bribes: 0,
     }));
 
-    console.log(insertResponse.insertedId);
+    console.log(insertResponse.insertedId,);
 
 
     // const dir = new Director({});

@@ -32,6 +32,8 @@
         let socket;
         function onConnect() {
             socket = io();
+
+            socket.emit('register', {username: 'danny'});
             connect.style.display = 'none';
             disconnect.style.display = 'block';
             messageBlock.style.display = 'block';
