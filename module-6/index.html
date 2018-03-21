@@ -102,7 +102,77 @@
                         <img src="../assets/istanbul-library.png" />
                     </div>
                 </div>
-
+            </section>
+            <section>
+                <h2>Spies</h2>
+                <img src="../assets/sinon.png" />
+            </section>
+            <section>
+                <h2>Spies</h2>
+                <small>A test spy is a function that records arguments, return value, the value of this and exception thrown (if
+                    any) for all its calls. </small>
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        class PersistanceMock implements PersistanceInterface {
+                            getItems = sinon.spy();
+                            getItemById = sinon.spy();
+                            insertItem = sinon.spy();
+                            updateItem = sinon.spy();
+                            deleteItem = sinon.spy();
+                        }
+                    </code>
+                </pre>
+            </section>
+            <section>
+                <h2>Stubs</h2>
+                <small>Test stubs are functions (spies) with pre-programmed behavior. They support the full test spy API in addition
+                    to methods which can be used to alter the stub’s behavior.</small>
+                <pre>
+                    <code data-trim data-noescape class="ts">
+                        var callback = sinon.stub();
+                        callback.withArgs(42).returns(1);
+                        callback.withArgs(1).throws("TypeError");
+                    
+                        callback(); // No return value, no exception
+                        callback(42); // Returns 1
+                        callback(1); // Throws TypeError
+                    </code>
+                </pre>
+            </section>
+            <section>
+                <img src="../assets/demotime.png" alt="">
+            </section>
+            <section>
+                <table>
+                    <tr>
+                        <td style="width:50%">
+                            <img src="../assets/exercise-time.png" />
+                        </td>
+                        <td style="vertical-align: top; font-size:16px">
+                            <ul style="list-style-type: none">
+                                <li>
+                                    <h4>Put your code under tests</h4>
+                                    <ul>
+                                        <li>
+                                            Separate between the controller and the logic.
+                                        </li>
+                                        <li>Add tests to the logic, expecially at the PUT request</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <br/>
+                            <br/>
+                            <ul style="list-style-type: none">
+                                <li>
+                                    <h4>notes</h4>
+                                </li>
+                                <ul>
+                                    <li>Use <code class="inline">sinon.spy()</code> to mock functionality</li>
+                                </ul>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
             </section>
         </div>
     </div>
