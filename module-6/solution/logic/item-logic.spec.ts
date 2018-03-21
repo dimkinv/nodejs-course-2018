@@ -77,7 +77,7 @@ describe('item validator tests', () => {
 });
 
 class PersistanceMock implements PersistanceInterface {
-    getItems = sinon.spy();
+    getItems = sinon.stub();
     getItemById = sinon.stub();
     insertItem = sinon.stub();
     updateItem = sinon.stub();

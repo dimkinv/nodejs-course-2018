@@ -54,7 +54,7 @@
                         <code class="inline">chai, assert, expect, should</code>
                     </li>
                     <li>Testing support tools (coverage, mutations)
-                        <code class="inlin">istanbul, striker</code>
+                        <code class="inline">istanbul, striker</code>
                     </li>
                 </ul>
             </section>
@@ -140,6 +140,24 @@
                 </pre>
             </section>
             <section>
+                <h2>Bonus: Contract testing</h2>
+                <small>
+                    <a href="https://github.com/visionmedia/supertest">Super-agent</a> driven library for testing node.js HTTP servers using a fluent API
+                </small>
+                <pre class="wide">
+                    <code data-trim data-noescape class="ts">
+                        it('should return 401 if put was send without auth header', (done) => {
+                            supertest(app)
+                                .post('/api/items')
+                                .expect(401)
+                                .end(()=>{
+                                    done();
+                                });
+                        });
+                    </code>
+                </pre>
+            </section>
+            <section>
                 <img src="../assets/demotime.png" alt="">
             </section>
             <section>
@@ -167,7 +185,8 @@
                                     <h4>notes</h4>
                                 </li>
                                 <ul>
-                                    <li>Use <code class="inline">sinon.spy()</code> to mock functionality</li>
+                                    <li>Use
+                                        <code class="inline">sinon.spy()</code> to mock functionality</li>
                                 </ul>
                             </ul>
                         </td>
