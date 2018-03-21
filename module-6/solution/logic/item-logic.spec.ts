@@ -5,11 +5,11 @@ import { ItemsLogic, ErrorType } from "./item-logic";
 import { PersistanceInterface } from "../../../module-3/solution/persistance/persistance.interface";
 
 describe('item validator tests', () => {
-    let itemValidator: ItemsLogic
+    let itemLogic: ItemsLogic
     let persistanceMock: PersistanceMock;
     beforeEach(async () => {
         persistanceMock = new PersistanceMock();
-        itemValidator = new ItemsLogic(persistanceMock);
+        itemLogic = new ItemsLogic(persistanceMock);
     });
     it('should return error object "notfound" if item wasnt found in persistance', async () => {
         // given
@@ -17,7 +17,7 @@ describe('item validator tests', () => {
         const user = 'dv696w';
 
         // when
-        const [error,] = await itemValidator.validateItemBeforeUpdate(user, 'some-non-exitent-id');
+        const [error,] = await itemLogic.validateItemBeforeUpdate(user, 'some-non-exitent-id');
 
         // then
         expect(error).to.be.ok;
@@ -34,7 +34,7 @@ describe('item validator tests', () => {
         const user = 'mock_user_id';
 
         // when
-        const [error,] = await itemValidator.validateItemBeforeUpdate(user, 'mock_item_id');
+        const [error,] = await itemLogic.validateItemBeforeUpdate(user, 'mock_item_id');
         // then
         expect(error).to.be.ok;
         expect(error.errorType).to.be.eq(ErrorType.BadItem);
@@ -52,7 +52,7 @@ describe('item validator tests', () => {
         const user = 'dv696w';
 
         // when
-        const [error,] = await itemValidator.validateItemBeforeUpdate(user, 'mock_item_id');
+        const [error,] = await itemLogic.validateItemBeforeUpdate(user, 'mock_item_id');
         // then
         expect(error).to.be.ok;
         expect(error.errorType).to.be.eq(ErrorType.BadItem);
@@ -69,7 +69,7 @@ describe('item validator tests', () => {
         const user = 'id_to_be_added';
 
         // when
-        const [,item] = await itemValidator.validateItemBeforeUpdate(user, 'mock_item_id');
+        const [,item] = await itemLogic.validateItemBeforeUpdate(user, 'mock_item_id');
         // then
         expect(item).to.be.ok;
         expect(item.buyers).includes('id_to_be_added')
