@@ -31,3 +31,5 @@ Full yarn CLI documentation can be found in: [yarn cli](https://yarnpkg.com/en/d
 ## remove yarn config
 `yarn config delete KEY`
 
+## init typescript tsconfig.json file (with all configuration)
+`tsc --init`
